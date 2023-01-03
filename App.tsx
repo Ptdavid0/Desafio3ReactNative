@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, StatusBar } from "react-native";
 import {
   useFonts,
   Karla_400Regular,
@@ -7,6 +7,7 @@ import {
 import Loading from "./src/components/Loading";
 import { NativeBaseProvider } from "native-base";
 import { THEME } from "./src/theme";
+import Routes from "./src/routes";
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -16,7 +17,12 @@ const App: React.FC = () => {
 
   return (
     <NativeBaseProvider theme={THEME}>
-      {!fontsLoaded ? <View /> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
     </NativeBaseProvider>
   );
 };
