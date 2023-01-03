@@ -2,9 +2,16 @@ import { Box, Icon, Image, Text, VStack } from "native-base";
 import React from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { AuthNavigatorRoutesProps } from "../routes/auth.routes";
 
 const Login: React.FC = () => {
+  const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
+
+  const handleGoRegister = () => {
+    navigate("Register");
+  };
+
   return (
     <VStack flex={1} bgColor="white">
       <VStack
@@ -64,7 +71,12 @@ const Login: React.FC = () => {
         <Text fontSize="sm" color="gray.600" fontFamily={"body"}>
           Ainda não tem acesso ?
         </Text>
-        <Button title="Criar uma conta" type="Secundary" mt={4} />
+        <Button
+          title="Criar uma conta"
+          type="Secundary"
+          mt={4}
+          onPress={handleGoRegister}
+        />
       </VStack>
     </VStack>
   );

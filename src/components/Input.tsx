@@ -15,7 +15,7 @@ const Input: React.FC<Props> = ({ errorMessages, isInvalid, ...rest }) => {
     <FormControl isInvalid={invalid} mb={4}>
       <NativeBaseInput
         bg={"white"}
-        h={12}
+        h={14}
         px={4}
         borderWidth={0}
         borderRadius={6}
