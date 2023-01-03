@@ -1,9 +1,10 @@
 import React from "react";
-import { View } from "react-native";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from "@react-navigation/native-stack";
+import Login from "../screens/Login";
+import Register from "../screens/Register";
 
 type AuthRoutes = {
   Login: undefined;
@@ -21,8 +22,8 @@ const AuthRoutes: React.FC = () => {
         headerShown: false,
       }}
     >
-      <Screen name="Login" component={View} />
-      <Screen name="Register" component={View} />
+      <Screen name="Login" component={Login} />
+      <Screen name="Register" component={Register} />
     </Navigator>
   );
 };

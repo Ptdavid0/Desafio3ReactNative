@@ -19,7 +19,7 @@ const App: React.FC = () => {
     <NativeBaseProvider theme={THEME}>
       {fontsLoaded ? <Routes /> : <Loading />}
       <StatusBar
-        barStyle="light-content"
+        barStyle="dark-content"
         backgroundColor="transparent"
         translucent
       />
