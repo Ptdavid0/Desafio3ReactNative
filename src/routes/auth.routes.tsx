@@ -6,14 +6,15 @@ import {
 import Login from "../screens/Login";
 import Register from "../screens/Register";
 
-type AuthRoutes = {
+type AuthRoutesProps = {
   Login: undefined;
   Register: undefined;
 };
 
-export type AuthNavigatorRoutesProps = NativeStackNavigationProp<AuthRoutes>;
+export type AuthNavigatorRoutesProps =
+  NativeStackNavigationProp<AuthRoutesProps>;
 
-const { Navigator, Screen } = createNativeStackNavigator<AuthRoutes>();
+const { Navigator, Screen } = createNativeStackNavigator<AuthRoutesProps>();
 
 const AuthRoutes: React.FC = () => {
   return (
