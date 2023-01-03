@@ -4,7 +4,7 @@ import { Center, Spinner } from "native-base";
 const Loading: React.FC = () => {
   return (
     <Center flex={1}>
-      <Spinner accessibilityLabel="Loading posts" />
+      <Spinner accessibilityLabel="Loading posts" color="blue.500" />
     </Center>
   );
 };
