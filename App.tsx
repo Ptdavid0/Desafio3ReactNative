@@ -8,6 +8,7 @@ import Loading from "./src/components/Loading";
 import { NativeBaseProvider } from "native-base";
 import { THEME } from "./src/theme";
 import Routes from "./src/routes";
+import AuthContextProvider from "./src/contexts/AuthContext";
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -17,7 +18,9 @@ const App: React.FC = () => {
 
   return (
     <NativeBaseProvider theme={THEME}>
-      {fontsLoaded ? <Routes /> : <Loading />}
+      <AuthContextProvider>
+        {fontsLoaded ? <Routes /> : <Loading />}
+      </AuthContextProvider>
       <StatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
