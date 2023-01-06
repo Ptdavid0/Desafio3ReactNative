@@ -36,7 +36,6 @@ const Button: React.FC<Props> = ({
       borderWidth={0}
       borderRadius={6}
       h={14}
-      rounded="sm"
       _pressed={{
         bg: _pressed[type],
       }}

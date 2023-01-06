@@ -48,7 +48,7 @@ const AppRoutes: React.FC = () => {
         options={{
           tabBarLabel: "Início",
           tabBarIcon: ({ color, size, focused }) => {
-            return <House color={color} size={size} />;
+            return <House color={color} size={size} weight="bold" />;
           },
         }}
       />
@@ -59,7 +59,7 @@ const AppRoutes: React.FC = () => {
         options={{
           tabBarLabel: "Minhas Vendas",
           tabBarIcon: ({ color, size, focused }) => {
-            return <Tag color={color} size={size} />;
+            return <Tag color={color} size={size} weight="bold" />;
           },
         }}
       />
@@ -70,7 +70,7 @@ const AppRoutes: React.FC = () => {
         options={{
           tabBarLabel: "Criar Venda",
           tabBarIcon: ({ color, size, focused }) => {
-            return <SignOutIcon size={size} />;
+            return <SignOutIcon size={size} weight="bold" />;
           },
         }}
       />
