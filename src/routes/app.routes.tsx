@@ -3,13 +3,16 @@ import {
   createBottomTabNavigator,
   BottomTabNavigationProp,
 } from "@react-navigation/bottom-tabs";
-import { Pressable, useTheme } from "native-base";
+import { Box, Pressable, useTheme } from "native-base";
 import { Platform } from "react-native";
 import Home from "../screens/Home";
 import MySales from "../screens/MySales";
 import CreateSale from "../screens/CreateSale";
-import { House, Tag, SignOut, Plus } from "phosphor-react-native";
+import { House, Tag, SignOut, Plus, ArrowLeft } from "phosphor-react-native";
 import SignOutIcon from "../components/SignOutIcon";
+import SaleDetails from "../screens/SaleDetails";
+import { useNavigation } from "@react-navigation/native";
+import ProductTag from "../components/ProductTag";
 
 type AppRoutes = {
   Home: undefined;
@@ -25,6 +28,7 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 
 const AppRoutes: React.FC = () => {
   const { colors, sizes, fonts } = useTheme();
+  const { goBack } = useNavigation();
   return (
     <Navigator
       initialRouteName="Home"
@@ -97,6 +101,38 @@ const AppRoutes: React.FC = () => {
           tabBarIcon: ({ color, size, focused }) => {
             return <SignOutIcon size={size} weight="bold" />;
           },
+        }}
+      />
+
+      <Screen
+        name="SaleDetails"
+        component={SaleDetails}
+        options={{
+          tabBarButton: () => null,
+          headerTitle: "",
+          tabBarStyle: { display: "none" },
+          headerStyle: {
+            backgroundColor: colors.gray[200],
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          headerLeft: () => {
+            return (
+              <Pressable
+                ml={4}
+                onPress={() => goBack()}
+                mr={10}
+                mt={Platform.OS === "android" ? 0 : 25}
+              >
+                <ArrowLeft size={24} weight="bold" />
+              </Pressable>
+            );
+          },
+          headerRight: () => (
+            <Box mr={4} mt={Platform.OS === "android" ? 0 : 25}>
+              <ProductTag />
+            </Box>
+          ),
         }}
       />
     </Navigator>
