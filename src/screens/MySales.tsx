@@ -1,8 +1,5 @@
 import { Center, Text } from "native-base";
 import React from "react";
-import { View } from "react-native";
-
-// import { Container } from './styles';
 
 const MySales: React.FC = () => {
   return (
