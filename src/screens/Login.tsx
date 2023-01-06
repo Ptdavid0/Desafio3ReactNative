@@ -1,4 +1,4 @@
-import { Box, Icon, Image, Text, VStack } from "native-base";
+import { Box, Image, Text, VStack } from "native-base";
 import React from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
