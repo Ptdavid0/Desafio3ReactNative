@@ -2,9 +2,14 @@ import { VStack, Image, Text, Heading, HStack, Box } from "native-base";
 import React from "react";
 import ProductTag from "./ProductTag";
 
-const ProductCard: React.FC = () => {
+type ProductCardProps = {
+  showAvatar?: boolean;
+  product?: any;
+};
+
+const ProductCard: React.FC<ProductCardProps> = ({ showAvatar = false }) => {
   return (
-    <VStack mt={10} borderRadius={6} w={"47%"}>
+    <VStack mt={6} borderRadius={6} w={"47%"}>
       <Box
         px={1}
         justifyContent={"space-between"}
@@ -18,14 +23,21 @@ const ProductCard: React.FC = () => {
         w={"100%"}
         mt={1}
       >
-        <Image
-          alt="imageProduct"
-          source={require("../assets/avatar.png")}
-          mr={2}
-          w={28}
-          h={28}
-          rounded={50}
-        />
+        {showAvatar ? (
+          <Image
+            alt="imageProduct"
+            source={require("../assets/avatar.png")}
+            mr={2}
+            w={28}
+            h={28}
+            rounded={50}
+            borderColor="white"
+            borderWidth={1.5}
+          />
+        ) : (
+          <Box />
+        )}
+
         <ProductTag />
       </Box>
       <Image

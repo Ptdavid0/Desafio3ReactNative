@@ -81,7 +81,7 @@ const Home: React.FC = () => {
             </Text>
           </VStack>
         </HStack>
-        <InvButton title="Meus anúncio" mr={2} />
+        <InvButton title="Meus anúncios" mr={2} />
       </HStack>
     </VStack>
   );
