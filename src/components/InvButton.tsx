@@ -1,6 +1,8 @@
 import React from "react";
 import { Button as NativeBaseButton, IButtonProps, Text } from "native-base";
 import { useTheme } from "native-base";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "../routes/app.routes";
 
 import { ArrowRight } from "phosphor-react-native";
 
@@ -10,11 +12,14 @@ type Props = IButtonProps & {
 
 const InvButton: React.FC<Props> = ({ title, ...rest }) => {
   const { colors } = useTheme();
+  const { navigate } = useNavigation<AppNavigatorRoutesProps>();
+
   return (
     <NativeBaseButton
       bgColor={"transparent"}
       borderWidth={0}
       borderRadius={6}
+      onPress={() => navigate("MySales")}
       _pressed={{
         bg: "transparent",
       }}

@@ -47,8 +47,8 @@ const MySales: React.FC = () => {
               <Select.Item label="Todos" value="all" />
               <Select.Item label="Ativos" value="active" />
               <Select.Item label="Inativos" value="inactive" />
-              <Select.Item label="Inativos" value="new" />
-              <Select.Item label="Inativos" value="inactive" />
+              <Select.Item label="Novo" value="new" />
+              <Select.Item label="Usado" value="used" />
             </Select>
           </HStack>
           <ProductsList showAvatar={false} isMyProduct />

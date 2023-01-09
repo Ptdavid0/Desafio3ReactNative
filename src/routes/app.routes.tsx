@@ -3,7 +3,7 @@ import {
   createBottomTabNavigator,
   BottomTabNavigationProp,
 } from "@react-navigation/bottom-tabs";
-import { Box, Pressable, useTheme } from "native-base";
+import { Box, Pressable, Text, useTheme, VStack } from "native-base";
 import { Platform } from "react-native";
 import Home from "../screens/Home";
 import MySales from "../screens/MySales";
@@ -11,7 +11,6 @@ import CreateSale from "../screens/CreateSale";
 import {
   House,
   Tag,
-  SignOut,
   Plus,
   ArrowLeft,
   PencilSimple,
@@ -21,6 +20,7 @@ import SaleDetails from "../screens/SaleDetails";
 import { useNavigation } from "@react-navigation/native";
 import ProductTag from "../components/ProductTag";
 import MySaleDetails from "../screens/MySaleDetails";
+import PreviewSale from "../screens/PreviewSale";
 
 type AppRoutes = {
   Home: undefined;
@@ -37,7 +37,7 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 
 const AppRoutes: React.FC = () => {
   const { colors, sizes, fonts } = useTheme();
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation<AppNavigatorRoutesProps>();
   return (
     <Navigator
       initialRouteName="Home"
@@ -63,6 +63,16 @@ const AppRoutes: React.FC = () => {
           tabBarIcon: ({ color, size, focused }) => {
             return <House color={color} size={size} weight="bold" />;
           },
+        }}
+      />
+
+      <Screen
+        name="PreviewSale"
+        component={PreviewSale}
+        options={{
+          headerShown: false,
+          tabBarLabel: "Início",
+          tabBarStyle: { display: "none" },
         }}
       />
 
@@ -161,7 +171,7 @@ const AppRoutes: React.FC = () => {
             return (
               <Pressable
                 ml={4}
-                onPress={() => goBack()}
+                onPress={() => navigate("MySales")}
                 mr={10}
                 mt={Platform.OS === "android" ? 0 : 25}
               >
