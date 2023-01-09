@@ -1,7 +1,11 @@
 import { Box, Text } from "native-base";
 import React from "react";
 
-const ProductTag: React.FC = () => {
+type ProductTagProps = {
+  condition?: string;
+};
+
+const ProductTag: React.FC<ProductTagProps> = ({ condition }) => {
   return (
     <Box
       bg="blue.500"

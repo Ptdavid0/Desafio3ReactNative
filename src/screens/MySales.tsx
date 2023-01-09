@@ -51,7 +51,7 @@ const MySales: React.FC = () => {
               <Select.Item label="Inativos" value="inactive" />
             </Select>
           </HStack>
-          <ProductsList showAvatar={false} />
+          <ProductsList showAvatar={false} isMyProduct />
         </VStack>
       )}
     </VStack>

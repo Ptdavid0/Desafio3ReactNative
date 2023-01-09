@@ -17,11 +17,14 @@ import {
   Barcode,
   CreditCard,
   Money,
+  Power,
   QrCode,
+  TrashSimple,
   WhatsappLogo,
 } from "phosphor-react-native";
+import ProductTag from "../components/ProductTag";
 
-const SaleDetails: React.FC = () => {
+const MySaleDetails: React.FC = () => {
   const { colors } = useTheme();
   const width = Dimensions.get("window").width / 3.3;
   return (
@@ -61,12 +64,7 @@ const SaleDetails: React.FC = () => {
       </Box>
 
       <VStack px={6} mt={2} flex={1}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          mb={134}
-          pb={12}
-          flex={1}
-        >
+        <ScrollView showsVerticalScrollIndicator={false} flex={1}>
           {/* Title */}
           <HStack justifyContent="space-between" alignItems="center">
             <Heading fontSize="xl" fontFamily="heading">
@@ -108,6 +106,14 @@ const SaleDetails: React.FC = () => {
               Sim
             </Text>
           </Box>
+
+          <Box mt={4} flexDirection="row" alignItems="center">
+            <Text fontSize="md" fontFamily="heading" color="gray.600">
+              Condição do produto:{"   "}
+            </Text>
+            <ProductTag condition="Novo" />
+          </Box>
+
           {/* Payment Methods */}
           <Box mt={4}>
             <Text fontSize="md" fontFamily="heading" color="gray.600">
@@ -146,43 +152,24 @@ const SaleDetails: React.FC = () => {
               </Text>
             </Box>
           </Box>
+          <Button
+            title="Desativar anúncio"
+            type="Tertiary"
+            size={"full"}
+            icon={<Power size={20} color="white" />}
+          />
+          <Button
+            title="Excluir anúncio"
+            type="Secundary"
+            mt={2}
+            mb={12}
+            size={"full"}
+            icon={<TrashSimple size={20} color="black" />}
+          />
         </ScrollView>
       </VStack>
-      {/* Footer */}
-      <HStack
-        px={6}
-        mt={4}
-        justifyContent="space-between"
-        alignItems={"center"}
-        position="absolute"
-        bgColor={"white"}
-        width="100%"
-        pb={12}
-        pt={6}
-        bottom={0}
-      >
-        <HStack alignItems="baseline">
-          <Heading
-            mr={1}
-            fontSize={"md"}
-            fontFamily={"heading"}
-            color={"blue.700"}
-          >
-            R$
-          </Heading>
-          <Heading fontFamily={"heading"} fontSize={"xl"} color={"blue.700"}>
-            59,90
-          </Heading>
-        </HStack>
-        <Button
-          title="Entrar em contato"
-          type="Primary"
-          size={"mid"}
-          icon={<WhatsappLogo size={20} color="white" weight="fill" />}
-        />
-      </HStack>
     </VStack>
   );
 };
 
-export default SaleDetails;
+export default MySaleDetails;
