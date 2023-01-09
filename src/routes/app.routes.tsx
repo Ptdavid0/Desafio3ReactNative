@@ -8,16 +8,25 @@ import { Platform } from "react-native";
 import Home from "../screens/Home";
 import MySales from "../screens/MySales";
 import CreateSale from "../screens/CreateSale";
-import { House, Tag, SignOut, Plus, ArrowLeft } from "phosphor-react-native";
+import {
+  House,
+  Tag,
+  SignOut,
+  Plus,
+  ArrowLeft,
+  PencilSimple,
+} from "phosphor-react-native";
 import SignOutIcon from "../components/SignOutIcon";
 import SaleDetails from "../screens/SaleDetails";
 import { useNavigation } from "@react-navigation/native";
 import ProductTag from "../components/ProductTag";
+import MySaleDetails from "../screens/MySaleDetails";
 
 type AppRoutes = {
   Home: undefined;
   MySales: undefined;
   SaleDetails: undefined;
+  MySaleDetails: undefined;
   CreateSale: undefined;
   PreviewSale: undefined;
 };
@@ -131,6 +140,38 @@ const AppRoutes: React.FC = () => {
           headerRight: () => (
             <Box mr={4} mt={Platform.OS === "android" ? 0 : 25}>
               <ProductTag />
+            </Box>
+          ),
+        }}
+      />
+
+      <Screen
+        name="MySaleDetails"
+        component={MySaleDetails}
+        options={{
+          tabBarButton: () => null,
+          headerTitle: "",
+          tabBarStyle: { display: "none" },
+          headerStyle: {
+            backgroundColor: colors.gray[200],
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          headerLeft: () => {
+            return (
+              <Pressable
+                ml={4}
+                onPress={() => goBack()}
+                mr={10}
+                mt={Platform.OS === "android" ? 0 : 25}
+              >
+                <ArrowLeft size={24} weight="bold" />
+              </Pressable>
+            );
+          },
+          headerRight: () => (
+            <Box mr={4} mt={Platform.OS === "android" ? 0 : 25}>
+              <PencilSimple size={24} weight="bold" />
             </Box>
           ),
         }}

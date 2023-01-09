@@ -114,7 +114,7 @@ const Home: React.FC = () => {
   );
 
   return (
-    <VStack flex={1} bg="gray.200" w={"100%"} px={10}>
+    <VStack flex={1} bg="gray.200" w={"100%"} px={6}>
       <Header />
       <MyProducts />
       <FilterProducts />

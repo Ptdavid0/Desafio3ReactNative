@@ -8,11 +8,17 @@ import { Pressable } from "react-native";
 type ProductCardProps = {
   showAvatar?: boolean;
   product?: any;
+  isMyProduct?: boolean;
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({ showAvatar = false }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  showAvatar = false,
+  isMyProduct,
+}) => {
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
   const handleNavigateToSaleDetails = () => {
+    if (isMyProduct) return navigate("MySaleDetails");
+
     navigate("SaleDetails");
   };
   return (
