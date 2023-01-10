@@ -3,11 +3,11 @@ import {
   createBottomTabNavigator,
   BottomTabNavigationProp,
 } from "@react-navigation/bottom-tabs";
-import { Box, Pressable, Text, useTheme, VStack } from "native-base";
+import { Box, Pressable, useTheme } from "native-base";
 import { Platform } from "react-native";
 import Home from "../screens/Home";
 import MySales from "../screens/MySales";
-import CreateSale from "../screens/CreateSale";
+import CreateSale from "../screens/FormSale";
 import {
   House,
   Tag,
@@ -21,14 +21,16 @@ import { useNavigation } from "@react-navigation/native";
 import ProductTag from "../components/ProductTag";
 import MySaleDetails from "../screens/MySaleDetails";
 import PreviewSale from "../screens/PreviewSale";
+import FormSale from "../screens/FormSale";
 
 type AppRoutes = {
   Home: undefined;
   MySales: undefined;
   SaleDetails: undefined;
   MySaleDetails: undefined;
-  CreateSale: undefined;
+  FormSale: undefined;
   PreviewSale: undefined;
+  MockSignOutScreen: undefined;
 };
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>;
@@ -113,12 +115,36 @@ const AppRoutes: React.FC = () => {
       />
 
       <Screen
-        name="CreateSale"
-        component={CreateSale}
+        name="FormSale"
+        component={FormSale}
         options={{
-          tabBarLabel: "Criar Venda",
-          tabBarIcon: ({ color, size, focused }) => {
-            return <SignOutIcon size={size} weight="bold" />;
+          tabBarButton: () => null,
+          headerTitle: "Criar anúncio",
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            marginTop: Platform.OS === "android" ? 0 : 25,
+            color: colors.gray[700],
+            fontSize: sizes[5],
+            fontFamily: fonts.heading,
+          },
+          headerStyle: {
+            backgroundColor: colors.gray[200],
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          tabBarStyle: { display: "none" },
+
+          headerLeft: () => {
+            return (
+              <Pressable
+                ml={4}
+                onPress={() => navigate("MySales")}
+                mr={10}
+                mt={Platform.OS === "android" ? 0 : 25}
+              >
+                <ArrowLeft size={24} weight="bold" />
+              </Pressable>
+            );
           },
         }}
       />
@@ -184,6 +210,17 @@ const AppRoutes: React.FC = () => {
               <PencilSimple size={24} weight="bold" />
             </Box>
           ),
+        }}
+      />
+
+      <Screen
+        name="MockSignOutScreen"
+        component={CreateSale}
+        options={{
+          tabBarLabel: "Criar Venda",
+          tabBarIcon: ({ color, size, focused }) => {
+            return <SignOutIcon size={size} weight="bold" />;
+          },
         }}
       />
     </Navigator>
