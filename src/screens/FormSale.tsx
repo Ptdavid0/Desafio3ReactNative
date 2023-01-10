@@ -1,13 +1,15 @@
 import {
   VStack,
   Text,
-  TextArea,
   HStack,
   Radio,
   ScrollView,
   Switch,
   Checkbox,
   Icon,
+  Image as NativeImage,
+  Box,
+  Pressable,
 } from "native-base";
 import React from "react";
 import Input from "../components/Input";
@@ -18,9 +20,13 @@ import {
   CreditCard,
   Money,
   QrCode,
+  Plus,
+  X,
 } from "phosphor-react-native";
 import { useTheme } from "native-base";
 import Button from "../components/Button";
+import { TouchableOpacity } from "react-native";
+import ImageFormPicker from "../components/ImageFormPicker";
 
 const CreateSale: React.FC = () => {
   const { colors } = useTheme();
@@ -36,7 +42,8 @@ const CreateSale: React.FC = () => {
       <Text fontSize="md" color="gray.600" fontFamily={"body"}>
         Escolha até 3 imagens para mostrar o quando o seu produto é incrível!
       </Text>
-      {/* Add image code */}
+
+      <ImageFormPicker />
     </VStack>
   );
 
