@@ -22,9 +22,11 @@ import {
   Tag,
   WhatsappLogo,
 } from "phosphor-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const PreviewSale: React.FC = () => {
   const { colors, sizes, fonts } = useTheme();
+  const { goBack, navigate } = useNavigation();
   const width = Dimensions.get("window").width / 3.3;
   return (
     <VStack flex={1} bg="gray.200">
@@ -179,6 +181,7 @@ const PreviewSale: React.FC = () => {
           title="Voltar e editar"
           type="Secundary"
           size={"mid"}
+          onPress={() => goBack()}
           icon={<ArrowLeft size={20} color={colors.gray[700]} />}
         />
 

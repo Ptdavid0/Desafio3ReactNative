@@ -12,16 +12,16 @@ import React from "react";
 import Button from "../components/Button";
 import { Plus, Tag, MagnifyingGlass, Sliders } from "phosphor-react-native";
 import { useNavigation } from "@react-navigation/native";
-import { AuthNavigatorRoutesProps } from "../routes/auth.routes";
 import { useTheme } from "native-base";
 import InvButton from "../components/InvButton";
 import FilterInput from "../components/FilterInput";
 import ProductsList from "../components/ProductList";
+import { AppNavigatorRoutesProps } from "../routes/app.routes";
 
 const Home: React.FC = () => {
   const { colors } = useTheme();
 
-  const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
+  const { navigate } = useNavigation<AppNavigatorRoutesProps>();
 
   const Header = () => (
     <HStack justifyContent="space-between" alignItems="center" mt={16}>
@@ -47,6 +47,7 @@ const Home: React.FC = () => {
         w={"45%"}
         title="Criar anúncio"
         type="Tertiary"
+        onPress={() => navigate("FormSale")}
         icon={<Plus size={16} color={colors.white} weight="bold" />}
         h={11}
       />
