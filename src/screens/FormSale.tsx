@@ -7,9 +7,6 @@ import {
   Switch,
   Checkbox,
   Icon,
-  Image as NativeImage,
-  Box,
-  Pressable,
 } from "native-base";
 import React from "react";
 import Input from "../components/Input";
@@ -20,12 +17,9 @@ import {
   CreditCard,
   Money,
   QrCode,
-  Plus,
-  X,
 } from "phosphor-react-native";
 import { useTheme } from "native-base";
 import Button from "../components/Button";
-import { TouchableOpacity } from "react-native";
 import ImageFormPicker from "../components/ImageFormPicker";
 
 const CreateSale: React.FC = () => {

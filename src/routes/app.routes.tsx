@@ -138,7 +138,7 @@ const AppRoutes: React.FC = () => {
             return (
               <Pressable
                 ml={4}
-                onPress={() => navigate("MySales")}
+                onPress={() => goBack()}
                 mr={10}
                 mt={Platform.OS === "android" ? 0 : 25}
               >
