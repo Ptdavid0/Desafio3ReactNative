@@ -11,7 +11,7 @@ import {
   Icon,
   Switch,
 } from "native-base";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import Button from "../components/Button";
 import {
   Plus,
@@ -159,7 +159,7 @@ const Home: React.FC = () => {
 
       <BottomSheet
         ref={bottomSheetRef}
-        index={0}
+        index={-1}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
         enablePanDownToClose={true}
