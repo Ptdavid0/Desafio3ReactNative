@@ -9,6 +9,7 @@ import { NativeBaseProvider } from "native-base";
 import { THEME } from "./src/theme";
 import Routes from "./src/routes";
 import AuthContextProvider from "./src/contexts/AuthContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -17,16 +18,18 @@ const App: React.FC = () => {
   });
 
   return (
-    <NativeBaseProvider theme={THEME}>
-      <AuthContextProvider>
-        {fontsLoaded ? <Routes /> : <Loading />}
-      </AuthContextProvider>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="transparent"
-        translucent
-      />
-    </NativeBaseProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NativeBaseProvider theme={THEME}>
+        <AuthContextProvider>
+          {fontsLoaded ? <Routes /> : <Loading />}
+        </AuthContextProvider>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="transparent"
+          translucent
+        />
+      </NativeBaseProvider>
+    </GestureHandlerRootView>
   );
 };
 
