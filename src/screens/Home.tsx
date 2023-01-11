@@ -7,21 +7,51 @@ import {
   VStack,
   Divider,
   Pressable,
+  Checkbox,
+  Icon,
+  Switch,
 } from "native-base";
-import React from "react";
+import React, { useCallback } from "react";
 import Button from "../components/Button";
-import { Plus, Tag, MagnifyingGlass, Sliders } from "phosphor-react-native";
+import {
+  Plus,
+  Tag,
+  MagnifyingGlass,
+  Sliders,
+  Bank,
+  Barcode,
+  CreditCard,
+  Money,
+  QrCode,
+  Circle,
+  X,
+} from "phosphor-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "native-base";
 import InvButton from "../components/InvButton";
 import FilterInput from "../components/FilterInput";
 import ProductsList from "../components/ProductList";
 import { AppNavigatorRoutesProps } from "../routes/app.routes";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 const Home: React.FC = () => {
   const { colors } = useTheme();
 
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
+
+  const bottomSheetRef = React.useRef<BottomSheet>(null);
+
+  const snapPoints = React.useMemo(() => ["75%"], []);
+
+  const handleSheetChanges = React.useCallback((index: number) => {}, []);
+
+  const handleClosePress = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
+  const handleSnapPress = useCallback((index: number) => {
+    bottomSheetRef.current?.snapToIndex(index);
+  }, []);
 
   const Header = () => (
     <HStack justifyContent="space-between" alignItems="center" mt={16}>
@@ -107,11 +137,17 @@ const Home: React.FC = () => {
           <MagnifyingGlass size={20} color={colors.gray[700]} weight="bold" />
         </Pressable>
         <Divider orientation="vertical" h={"40%"} mx={2} />
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={() => handleSnapPress(0)}>
           <Sliders size={20} color={colors.gray[700]} weight="bold" />
         </Pressable>
       </HStack>
     </VStack>
+  );
+
+  const Title = ({ children }: any) => (
+    <Text fontSize="xl" color="gray.600" fontFamily={"heading"}>
+      {children}
+    </Text>
   );
 
   return (
@@ -120,6 +156,140 @@ const Home: React.FC = () => {
       <MyProducts />
       <FilterProducts />
       <ProductsList />
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        enablePanDownToClose={true}
+      >
+        <Box flex={1} bg="white" px={6}>
+          <VStack w="100%" mt={8}>
+            <HStack justifyContent="space-between" alignItems="center">
+              <Title>Filtrar anúncios</Title>
+              <Pressable onPress={handleClosePress} mr={2}>
+                <X size={24} color={colors.gray[400]} weight="bold" />
+              </Pressable>
+            </HStack>
+            <Text fontSize="md" fontFamily="heading" color="gray.600" mt={8}>
+              Condição
+            </Text>
+
+            <HStack w="100%" mt={2}>
+              <Checkbox
+                value="orange"
+                size="md"
+                bgColor={"gray.100"}
+                my={2}
+                mr={4}
+                _checked={{
+                  bg: "blue.500",
+                  color: "white",
+                }}
+              >
+                Novo
+              </Checkbox>
+              <Checkbox
+                value="orange"
+                size="md"
+                bgColor={"gray.100"}
+                my={2}
+                _checked={{
+                  bg: "blue.500",
+                  color: "white",
+                }}
+              >
+                Usado
+              </Checkbox>
+            </HStack>
+
+            <Text fontSize="md" fontFamily="heading" color="gray.600" mt={2}>
+              Aceita troca ?
+            </Text>
+            <Switch
+              size="md"
+              mt={2}
+              offTrackColor="gray.200"
+              onTrackColor="blue.500"
+              onThumbColor="white"
+              // onToggle={() => {}}
+            />
+            <Text fontSize="md" fontFamily="heading" color="gray.600" mt={4}>
+              Meios de pagamento aceitos
+            </Text>
+            <VStack w="100%" justifyContent={"center"} mt={2}>
+              <Checkbox
+                value="orange"
+                size="md"
+                bgColor={"gray.100"}
+                icon={<Icon as={<Barcode size={16} color={colors.white} />} />}
+                my={2}
+                _checked={{
+                  bg: "blue.500",
+                }}
+              >
+                Boleto
+              </Checkbox>
+              <Checkbox
+                value="dark"
+                size="md"
+                bgColor={"gray.100"}
+                icon={<Icon as={<QrCode size={16} color={colors.white} />} />}
+                my={1}
+                _checked={{
+                  bg: "blue.500",
+                }}
+              >
+                Pix
+              </Checkbox>
+              <Checkbox
+                value="red"
+                size="md"
+                bgColor={"gray.100"}
+                icon={<Icon as={<Money size={16} color={colors.white} />} />}
+                my={1}
+                _checked={{
+                  bg: "blue.500",
+                }}
+              >
+                Dinheiro
+              </Checkbox>
+              <Checkbox
+                value="blue"
+                size="md"
+                bgColor={"gray.100"}
+                icon={
+                  <Icon as={<CreditCard size={16} color={colors.white} />} />
+                }
+                my={1}
+                _checked={{
+                  bg: "blue.500",
+                }}
+              >
+                Cartão de crédito
+              </Checkbox>
+              <Checkbox
+                value="blue"
+                size="md"
+                bgColor={"gray.100"}
+                icon={<Icon as={<Bank size={16} color={colors.white} />} />}
+                mb={4}
+                my={1}
+                _checked={{
+                  bg: "blue.500",
+                }}
+              >
+                Depósito bancário
+              </Checkbox>
+            </VStack>
+            <HStack w="100%" justifyContent="space-between" mt={4}>
+              <Button title="Resetar filtros" type="Tertiary" size={"mid"} />
+              <Button title="Aplicar filtros" type="Secundary" size={"mid"} />
+            </HStack>
+          </VStack>
+        </Box>
+      </BottomSheet>
     </VStack>
   );
 };
