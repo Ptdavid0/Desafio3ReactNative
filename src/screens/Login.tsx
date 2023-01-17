@@ -4,12 +4,21 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "../routes/auth.routes";
-
+import { useAuth } from "../hooks/useAuth";
 const Login: React.FC = () => {
   const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
 
+  const { signIn } = useAuth();
+
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
   const handleGoRegister = () => {
     navigate("Register");
+  };
+
+  const handleSignIn = async () => {
+    await signIn(email, password);
   };
 
   return (

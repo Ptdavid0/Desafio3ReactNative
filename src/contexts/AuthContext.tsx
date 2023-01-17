@@ -1,10 +1,12 @@
 import React from "react";
 import { UserDTO } from "../dtos/UserDTO";
+import api from "../service/api";
 
 export type AuthContextData = {
   signed: boolean;
   user: UserDTO;
   setSigned: React.Dispatch<React.SetStateAction<boolean>>;
+  signIn: (email: string, password: string) => Promise<void>;
 };
 
 type AuthContextProviderProps = {
@@ -18,8 +20,18 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 }) => {
   const [user, setUser] = React.useState<UserDTO>({} as UserDTO);
   const [signed, setSigned] = React.useState(false);
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data } = await api.post("/sessions", { email, password });
+      setUser(data.user);
+      setSigned(true);
+    } catch (err) {
+      throw err;
+    }
+  };
   const value = {
-    signed: true,
+    signed,
     user: {
       id: "1",
       avatar: "",
@@ -27,6 +39,7 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       email: "john@gmail.com",
       tel: "",
     },
+    signIn,
     setSigned,
   };
 
