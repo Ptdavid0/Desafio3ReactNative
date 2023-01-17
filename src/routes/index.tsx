@@ -4,9 +4,11 @@ import React from "react";
 import AppRoutes from "./app.routes";
 
 import AuthRoutes from "./auth.routes";
+import { useAuth } from "../hooks/useAuth";
 
 const Routes: React.FC = () => {
   const { colors } = useTheme();
+  const { signed } = useAuth();
 
   const theme = DefaultTheme;
   theme.colors.background = colors.gray[100];
@@ -14,7 +16,7 @@ const Routes: React.FC = () => {
   return (
     <Box flex={1} bg="gray.700">
       <NavigationContainer theme={theme}>
-        <AppRoutes />
+        {signed ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </Box>
   );
