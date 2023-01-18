@@ -72,6 +72,7 @@ const AppRoutes: React.FC = () => {
         name="PreviewSale"
         component={PreviewSale}
         options={{
+          tabBarButton: () => null,
           headerShown: false,
           tabBarLabel: "Início",
           tabBarStyle: { display: "none" },

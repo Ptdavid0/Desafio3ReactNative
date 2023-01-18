@@ -1,4 +1,4 @@
-import { Box, Image, Text, VStack } from "native-base";
+import { Box, Image, Text, VStack, useToast } from "native-base";
 import React from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
@@ -7,6 +7,7 @@ import { AuthNavigatorRoutesProps } from "../routes/auth.routes";
 import { useAuth } from "../hooks/useAuth";
 const Login: React.FC = () => {
   const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
+  const toast = useToast();
 
   const { signIn } = useAuth();
 
@@ -18,6 +19,15 @@ const Login: React.FC = () => {
   };
 
   const handleSignIn = async () => {
+    if (!email || !password) {
+      toast.show({
+        title: "Preencha todos os campos",
+        duration: 3000,
+        placement: "top",
+        variant: "left-accent",
+      });
+      return;
+    }
     await signIn(email, password);
   };
 
@@ -64,9 +74,13 @@ const Login: React.FC = () => {
           <Text fontSize="sm" color="gray.600" fontFamily={"body"}>
             Acesse sua conta
           </Text>
-          <Input placeholder="Email" mt={4} />
-          <Input placeholder="Senha" secureTextEntry />
-          <Button title="Entrar" type="Primary" mt={4} />
+          <Input placeholder="Email" mt={4} onChangeText={setEmail} />
+          <Input
+            placeholder="Senha"
+            secureTextEntry
+            onChangeText={setPassword}
+          />
+          <Button title="Entrar" type="Primary" mt={4} onPress={handleSignIn} />
         </Box>
       </VStack>
       <VStack

@@ -23,7 +23,6 @@ import {
   CreditCard,
   Money,
   QrCode,
-  Circle,
   X,
 } from "phosphor-react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -33,9 +32,13 @@ import FilterInput from "../components/FilterInput";
 import ProductsList from "../components/ProductList";
 import { AppNavigatorRoutesProps } from "../routes/app.routes";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { useAuth } from "../hooks/useAuth";
+import api from "../service/api";
 
 const Home: React.FC = () => {
   const { colors } = useTheme();
+  const { user } = useAuth();
+  console.log(user);
 
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
 
@@ -60,7 +63,10 @@ const Home: React.FC = () => {
           alt="Logo"
           w={12}
           h={12}
-          source={require("../assets/avatar.png")}
+          rounded="full"
+          source={{
+            uri: `${api.defaults.baseURL}/images/${user.avatar}`,
+          }}
           resizeMode="contain"
           mr={2}
         />
@@ -69,7 +75,7 @@ const Home: React.FC = () => {
             Boas Vindas,
           </Text>
           <Heading fontSize="md" fontFamily="heading">
-            João !
+            {user?.name} !
           </Heading>
         </VStack>
       </HStack>
