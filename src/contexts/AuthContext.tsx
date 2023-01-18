@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ProductDTO } from "../dtos/ProductDTO";
 import { UserDTO } from "../dtos/UserDTO";
 import api from "../service/api";
+import {
+  storageAuthTokenGet,
+  storageAuthTokenRemove,
+  storageAuthTokenSave,
+} from "../storage/storageAuthToken";
+import {
+  storageUser,
+  storageUserGet,
+  storageUserRemove,
+} from "../storage/storageUsers";
 
 export type AuthContextData = {
   signed: boolean;
@@ -8,6 +19,10 @@ export type AuthContextData = {
   setSigned: React.Dispatch<React.SetStateAction<boolean>>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => void;
+  allProducts: ProductDTO[];
+  setAllProducts: React.Dispatch<React.SetStateAction<ProductDTO[]>>;
+  isLoadingUserStorageData: boolean;
+  refreshedToken: string;
 };
 
 type AuthContextProviderProps = {
@@ -19,24 +34,95 @@ export const AuthContext = React.createContext({} as AuthContextData);
 const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   children,
 }) => {
-  const [user, setUser] = React.useState<UserDTO>({} as UserDTO);
-  const [signed, setSigned] = React.useState(false);
+  const [user, setUser] = useState<UserDTO>({} as UserDTO);
+  const [signed, setSigned] = useState(false);
+  const [allProducts, setAllProducts] = useState<ProductDTO[]>([]);
+  const [isLoadingUserStorageData, setIsLoadingUserStorageData] =
+    useState(true);
+  const [refreshedToken, setRefreshedToken] = useState("");
 
-  const signIn = async (email: string, password: string) => {
+  const userAndTokenUpdate = async (userData: UserDTO, token: string) => {
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    setUser(userData);
+  };
+
+  const storageUserAndTokenSave = async (userData: UserDTO, token: string) => {
     try {
-      const { data } = await api.post("/sessions", { email, password });
-      console.log(data);
-      setUser(data.user);
-      setSigned(true);
-    } catch (err) {
-      throw err;
+      setIsLoadingUserStorageData(true);
+      await storageUser(userData);
+      await storageAuthTokenSave(token);
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorageData(false);
     }
   };
 
-  const signOut = () => {
-    setUser({} as UserDTO);
-    setSigned(false);
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data } = await api.post("/sessions", {
+        email,
+        password,
+      });
+      if (data.user && data.token) {
+        setIsLoadingUserStorageData(true);
+        await storageUserAndTokenSave(data.user, data.token);
+        userAndTokenUpdate(data.user, data.token);
+        setSigned(true);
+        setUser(data.user);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorageData(false);
+    }
   };
+
+  const signOut = async () => {
+    try {
+      setIsLoadingUserStorageData(true);
+      setUser({} as UserDTO);
+      await storageUserRemove();
+      await storageAuthTokenRemove();
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorageData(false);
+    }
+  };
+
+  const refreshTokenUpdated = async (newToken: string) => {
+    setRefreshedToken(newToken);
+  };
+
+  const loadUserData = async () => {
+    try {
+      setIsLoadingUserStorageData(true);
+
+      const userLogged = await storageUserGet();
+      const token = await storageAuthTokenGet();
+
+      if (userLogged && token) {
+        userAndTokenUpdate(userLogged, token);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorageData(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  useEffect(() => {
+    const subscribe = api.registerInterceptTokenManager({
+      signOut,
+      refreshTokenUpdated,
+    });
+    return () => subscribe();
+  }, [signOut]);
 
   const value = {
     signed,
@@ -44,6 +130,10 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     signIn,
     setSigned,
     signOut,
+    allProducts,
+    setAllProducts,
+    isLoadingUserStorageData,
+    refreshedToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
