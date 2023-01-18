@@ -6,7 +6,6 @@ import { PencilSimpleLine } from "phosphor-react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import uuid from "uuid";
-import { PhotoFileDTO } from "../dtos/AvatarFileDTO";
 
 const photoFileConstructor = async (
   selectedPhoto: ImagePicker.ImagePickerResult
@@ -30,7 +29,7 @@ const photoFileConstructor = async (
   }
 };
 
-async function checkingPhotoSize(selectedPhotoURI: string) {
+const checkingPhotoSize = async (selectedPhotoURI: string) => {
   const photoInfo = await FileSystem.getInfoAsync(selectedPhotoURI);
   if (photoInfo.size) {
     const photoSizeInMb = photoInfo.size / 1024 / 1024;
@@ -46,7 +45,7 @@ async function checkingPhotoSize(selectedPhotoURI: string) {
   } else {
     return false;
   }
-}
+};
 
 type AvatarImagePickerProps = {
   onImagePicked: (image: any) => void;

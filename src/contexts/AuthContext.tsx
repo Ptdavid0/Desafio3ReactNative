@@ -7,6 +7,7 @@ export type AuthContextData = {
   user: UserDTO;
   setSigned: React.Dispatch<React.SetStateAction<boolean>>;
   signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => void;
 };
 
 type AuthContextProviderProps = {
@@ -24,23 +25,25 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const signIn = async (email: string, password: string) => {
     try {
       const { data } = await api.post("/sessions", { email, password });
+      console.log(data);
       setUser(data.user);
       setSigned(true);
     } catch (err) {
       throw err;
     }
   };
+
+  const signOut = () => {
+    setUser({} as UserDTO);
+    setSigned(false);
+  };
+
   const value = {
     signed,
-    user: {
-      id: "1",
-      avatar: "",
-      name: "John Doe",
-      email: "john@gmail.com",
-      tel: "",
-    },
+    user,
     signIn,
     setSigned,
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

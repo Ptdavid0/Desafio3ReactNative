@@ -7,8 +7,10 @@ import { AuthNavigatorRoutesProps } from "../routes/auth.routes";
 import AvatarImagePicker from "../components/AvatarImagePicker";
 import { PhotoFileDTO } from "../dtos/AvatarFileDTO";
 import { addUser } from "../storage/addUser";
+import { useAuth } from "../hooks/useAuth";
 
 const Register: React.FC = () => {
+  const { signIn } = useAuth();
   const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
   const handleGoBack = () => {
     navigate("Login");
@@ -36,13 +38,13 @@ const Register: React.FC = () => {
       tel,
       avatar,
     });
-    if (!userCreated) {
+    if (userCreated) {
       toast.show({
         title: "Cadastro realizado com sucesso",
         duration: 3000,
         placement: "top",
       });
-      // handleGoBack();
+      await signIn(email, password);
     } else {
       toast.show({
         title: "Erro ao cadastrar",

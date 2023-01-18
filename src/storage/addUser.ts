@@ -1,5 +1,4 @@
 import axios from "axios";
-import { PhotoFileDTO } from "../dtos/AvatarFileDTO";
 import api from "../service/api";
 
 interface UserData {
