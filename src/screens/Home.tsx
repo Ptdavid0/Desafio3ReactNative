@@ -25,7 +25,7 @@ import {
   QrCode,
   X,
 } from "phosphor-react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTheme } from "native-base";
 import InvButton from "../components/InvButton";
 import FilterInput from "../components/FilterInput";
@@ -34,11 +34,11 @@ import { AppNavigatorRoutesProps } from "../routes/app.routes";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useAuth } from "../hooks/useAuth";
 import api from "../service/api";
+import { getAllProducts } from "../storage/getAllProducts";
 
 const Home: React.FC = () => {
   const { colors } = useTheme();
-  const { user } = useAuth();
-  console.log(user);
+  const { user, setAllProducts } = useAuth();
 
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
 
@@ -55,6 +55,17 @@ const Home: React.FC = () => {
   const handleSnapPress = useCallback((index: number) => {
     bottomSheetRef.current?.snapToIndex(index);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const getProducts = async () => {
+        const products = await getAllProducts();
+        setAllProducts(products);
+        console.log(products);
+      };
+      getProducts();
+    }, [])
+  );
 
   const Header = () => (
     <HStack justifyContent="space-between" alignItems="center" mt={16}>
