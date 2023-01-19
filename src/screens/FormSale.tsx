@@ -24,28 +24,19 @@ import ImageFormPicker from "../components/ImageFormPicker";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
-import { useAuth } from "../hooks/useAuth";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "../routes/app.routes";
 
 const schema = yup.object().shape({
   name: yup.string().required("Nome é obrigatório"),
   description: yup.string().required("Descrição é obrigatória"),
   price: yup.number().required("Preço é obrigatório"),
-  is_new: yup.boolean().required("Condição é obrigatório"),
-  payment_methods: yup
-    .array()
-    .of(yup.string())
-    .required("Métodos de pagamento são obrigatórios"),
-  accept_trade: yup.boolean().required("Aceita trocas é obrigatório"),
 });
 
 const CreateSale: React.FC = () => {
+  const [paymentMethods, setPaymentMethods] = React.useState<string[]>([]);
   const { colors } = useTheme();
-  const Title = ({ children }: any) => (
-    <Text fontSize="lg" color="gray.600" fontFamily={"heading"}>
-      {children}
-    </Text>
-  );
-  const { generateFormData } = useAuth();
+  const { navigate } = useNavigation<AppNavigatorRoutesProps>();
 
   const {
     control,
@@ -56,9 +47,20 @@ const CreateSale: React.FC = () => {
   });
 
   const onSubmit = (data: any) => {
-    const imageForm = generateFormData();
-    console.log(data, imageForm);
+    console.log("here");
+    const product = {
+      ...data,
+      price: data.price / 100,
+      payment_methods: paymentMethods,
+    };
+    navigate("PreviewSale", { product });
   };
+
+  const Title = ({ children }: any) => (
+    <Text fontSize="lg" color="gray.600" fontFamily={"heading"}>
+      {children}
+    </Text>
+  );
 
   const ImageBox = () => (
     <VStack w="100%" justifyContent={"center"}>
@@ -77,12 +79,14 @@ const CreateSale: React.FC = () => {
 
       <Controller
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onChange, onBlur, value } }) => (
           <Input
             placeholder="Título do anúncio"
             mt={2}
+            onBlur={onBlur}
             onChangeText={(value) => onChange(value)}
             value={value}
+            errorMessages={errors.name?.message}
           />
         )}
         name="name"
@@ -98,6 +102,7 @@ const CreateSale: React.FC = () => {
             mt={2}
             onChangeText={(value) => onChange(value)}
             value={value}
+            errorMessages={errors.name?.message}
           />
         )}
         name="description"
@@ -113,6 +118,7 @@ const CreateSale: React.FC = () => {
               name="is_new"
               accessibilityLabel="favorite number"
               onChange={(value) => onChange(value === "new" ? true : false)}
+              value={value === true ? "new" : "used"}
               defaultValue="one"
               direction={"row"}
               w={"100%"}
@@ -155,6 +161,7 @@ const CreateSale: React.FC = () => {
             keyboardType="numeric"
             onChangeText={(value) => onChange(value)}
             value={value}
+            errorMessages={errors.name?.message}
             InputLeftElement={
               <Text
                 fontSize="md"
@@ -198,82 +205,73 @@ const CreateSale: React.FC = () => {
         Meios de pagamento aceitos
       </Text>
       <VStack w="100%" justifyContent={"center"} mt={2}>
-        <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <Checkbox.Group
-              onChange={(value) => onChange(value)}
-              accessibilityLabel="choose numbers"
-            >
-              <Checkbox
-                value="boleto"
-                size="md"
-                bgColor={"gray.200"}
-                icon={<Icon as={<Barcode size={16} color={colors.white} />} />}
-                my={2}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Boleto
-              </Checkbox>
-              <Checkbox
-                value="pix"
-                size="md"
-                bgColor={"gray.200"}
-                icon={<Icon as={<QrCode size={16} color={colors.white} />} />}
-                my={1}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Pix
-              </Checkbox>
-              <Checkbox
-                value="cash"
-                size="md"
-                bgColor={"gray.200"}
-                icon={<Icon as={<Money size={16} color={colors.white} />} />}
-                my={1}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Dinheiro
-              </Checkbox>
-              <Checkbox
-                value="card"
-                size="md"
-                bgColor={"gray.200"}
-                icon={
-                  <Icon as={<CreditCard size={16} color={colors.white} />} />
-                }
-                my={1}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Cartão de crédito
-              </Checkbox>
-              <Checkbox
-                value="deposit"
-                size="md"
-                bgColor={"gray.200"}
-                icon={<Icon as={<Bank size={16} color={colors.white} />} />}
-                mb={20}
-                my={1}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Depósito bancário
-              </Checkbox>
-            </Checkbox.Group>
-          )}
-          name="payment_methods"
-          rules={{ required: true }}
-          defaultValue=""
-        />
+        <Checkbox.Group
+          onChange={setPaymentMethods}
+          value={paymentMethods}
+          accessibilityLabel="choose payment methods"
+        >
+          <Checkbox
+            value="boleto"
+            size="md"
+            bgColor={"gray.200"}
+            icon={<Icon as={<Barcode size={16} color={colors.white} />} />}
+            my={2}
+            _checked={{
+              bg: "blue.500",
+            }}
+          >
+            Boleto
+          </Checkbox>
+          <Checkbox
+            value="pix"
+            size="md"
+            bgColor={"gray.200"}
+            icon={<Icon as={<QrCode size={16} color={colors.white} />} />}
+            my={1}
+            _checked={{
+              bg: "blue.500",
+            }}
+          >
+            Pix
+          </Checkbox>
+          <Checkbox
+            value="cash"
+            size="md"
+            bgColor={"gray.200"}
+            icon={<Icon as={<Money size={16} color={colors.white} />} />}
+            my={1}
+            _checked={{
+              bg: "blue.500",
+            }}
+          >
+            Dinheiro
+          </Checkbox>
+          <Checkbox
+            value="card"
+            size="md"
+            bgColor={"gray.200"}
+            icon={<Icon as={<CreditCard size={16} color={colors.white} />} />}
+            my={1}
+            _checked={{
+              bg: "blue.500",
+            }}
+          >
+            Cartão de crédito
+          </Checkbox>
+          <Checkbox
+            value="deposit"
+            size="md"
+            bgColor={"gray.200"}
+            icon={<Icon as={<Bank size={16} color={colors.white} />} />}
+            mb={20}
+            my={1}
+            _checked={{
+              bg: "blue.500",
+            }}
+          >
+            Depósito bancário
+          </Checkbox>
+        </Checkbox.Group>
       </VStack>
     </VStack>
   );

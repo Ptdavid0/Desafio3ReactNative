@@ -6,7 +6,7 @@ import {
 import React from "react";
 
 type Props = IInputProps & {
-  errorMessages?: string | null;
+  errorMessages?: any;
 };
 
 const TextAreaInput: React.FC<Props> = ({

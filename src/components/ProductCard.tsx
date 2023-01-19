@@ -77,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             R$
           </Heading>
           <Heading fontFamily={"heading"} fontSize={"lg"}>
-            {price / 100}
+            {price}
           </Heading>
         </HStack>
       </Pressable>
