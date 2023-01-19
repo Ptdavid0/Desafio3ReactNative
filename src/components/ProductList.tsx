@@ -1,9 +1,10 @@
 import { Box, ScrollView } from "native-base";
 import React from "react";
+import { ProductDTO } from "../dtos/ProductDTO";
 import ProductCard from "./ProductCard";
 
 type ProductsListProps = {
-  products?: any[];
+  products?: ProductDTO[];
   showAvatar?: boolean;
   isMyProduct?: boolean;
 };
@@ -11,15 +12,17 @@ type ProductsListProps = {
 const ProductsList: React.FC<ProductsListProps> = ({
   showAvatar = false,
   isMyProduct = false,
+  products,
 }) => {
   return (
     <ScrollView flex={1} my={4} showsVerticalScrollIndicator={false}>
       <Box flexDirection="row" justifyContent="space-between" flexWrap={"wrap"}>
-        {Array.from({ length: 10 }).map((_, index) => (
+        {products?.map((product, index) => (
           <ProductCard
             key={index}
             isMyProduct={isMyProduct}
             showAvatar={showAvatar}
+            product={product}
           />
         ))}
       </Box>

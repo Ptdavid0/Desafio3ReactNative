@@ -1,4 +1,4 @@
-import { Box, useToast, Image } from "native-base";
+import { Box, Image } from "native-base";
 import React from "react";
 import { Alert, TouchableOpacity } from "react-native";
 import DefaultAvatar from "../assets/avatar.png";
@@ -6,6 +6,7 @@ import { PencilSimpleLine } from "phosphor-react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import uuid from "uuid";
+import { PhotoFileDTO } from "../dtos/PhotoFileDTO";
 
 const photoFileConstructor = async (
   selectedPhoto: ImagePicker.ImagePickerResult
@@ -17,7 +18,7 @@ const photoFileConstructor = async (
       name: `${imageRandomName}.${fileExtension}`,
       uri: selectedPhoto.assets[0].uri,
       type: `${selectedPhoto.assets[0].type}/${fileExtension}`,
-    } as any;
+    } as PhotoFileDTO;
 
     return photoFile;
   } else {
@@ -55,7 +56,6 @@ const AvatarImagePicker: React.FC<AvatarImagePickerProps> = ({
   onImagePicked,
 }) => {
   const [image, setImage] = React.useState<string | null>(null);
-  const toast = useToast();
 
   const handlePickImage = async () => {
     try {

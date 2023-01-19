@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { PhotoFileDTO } from "../dtos/PhotoFileDTO";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { UserDTO } from "../dtos/UserDTO";
 import api from "../service/api";
@@ -23,6 +24,12 @@ export type AuthContextData = {
   setAllProducts: React.Dispatch<React.SetStateAction<ProductDTO[]>>;
   isLoadingUserStorageData: boolean;
   refreshedToken: string;
+  allMyProducts: ProductDTO[];
+  setAllMyProducts: React.Dispatch<React.SetStateAction<ProductDTO[]>>;
+  currentProductImages: PhotoFileDTO[];
+  setCurrentProductImages: React.Dispatch<React.SetStateAction<PhotoFileDTO[]>>;
+  generateFormData: () => FormData;
+  cleanCurrentProductImages: () => void;
 };
 
 type AuthContextProviderProps = {
@@ -40,10 +47,24 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] =
     useState(true);
   const [refreshedToken, setRefreshedToken] = useState("");
+  const [allMyProducts, setAllMyProducts] = useState<ProductDTO[]>([]);
+  const [currentProductImages, setCurrentProductImages] = useState<any[]>([]);
 
   const userAndTokenUpdate = async (userData: UserDTO, token: string) => {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     setUser(userData);
+  };
+
+  const generateFormData = () => {
+    const formData = new FormData();
+    currentProductImages.forEach((image) => {
+      formData.append("images", image as any);
+    });
+    return formData;
+  };
+
+  const cleanCurrentProductImages = () => {
+    setCurrentProductImages([]);
   };
 
   const storageUserAndTokenSave = async (userData: UserDTO, token: string) => {
@@ -65,6 +86,7 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
         password,
       });
       if (data.user && data.token) {
+        console.log(data.token);
         setIsLoadingUserStorageData(true);
         await storageUserAndTokenSave(data.user, data.token);
         userAndTokenUpdate(data.user, data.token);
@@ -134,6 +156,12 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     setAllProducts,
     isLoadingUserStorageData,
     refreshedToken,
+    allMyProducts,
+    setAllMyProducts,
+    currentProductImages,
+    setCurrentProductImages,
+    generateFormData,
+    cleanCurrentProductImages,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

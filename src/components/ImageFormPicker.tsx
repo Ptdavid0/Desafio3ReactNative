@@ -8,42 +8,86 @@ import {
 import { Plus, X } from "phosphor-react-native";
 import React from "react";
 import * as ImagePicker from "expo-image-picker";
-import { TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 import { useTheme } from "native-base";
+import * as FileSystem from "expo-file-system";
+import uuid from "uuid";
+import { PhotoFileDTO } from "../dtos/PhotoFileDTO";
+import { useAuth } from "../hooks/useAuth";
 
-type Image = {
-  uri: string;
-  id: string;
+const photoFileConstructor = async (
+  selectedPhoto: ImagePicker.ImagePickerResult
+) => {
+  if (selectedPhoto.assets) {
+    const imageRandomName = uuid.v4();
+    const fileExtension = selectedPhoto.assets[0].uri.split(".").pop();
+    const photoFile = {
+      name: `${imageRandomName}.${fileExtension}`,
+      uri: selectedPhoto.assets[0].uri,
+      type: `${selectedPhoto.assets[0].type}/${fileExtension}`,
+    } as any;
+
+    return photoFile;
+  } else {
+    return {
+      name: "",
+      uri: "",
+      type: "",
+    };
+  }
+};
+
+const checkingPhotoSize = async (selectedPhotoURI: string) => {
+  const photoInfo = await FileSystem.getInfoAsync(selectedPhotoURI);
+  if (photoInfo.size) {
+    const photoSizeInMb = photoInfo.size / 1024 / 1024;
+
+    if (photoSizeInMb < 5) {
+      return true;
+    } else {
+      Alert.alert(
+        "A imagem selecionada é muito grande, por favor selecione uma imagem menor do que 5MB"
+      );
+      return false;
+    }
+  } else {
+    return false;
+  }
 };
 
 const ImageFormPicker: React.FC = () => {
-  const [images, setImages] = React.useState<Image[]>([]);
   const { colors } = useTheme();
+  const { setCurrentProductImages, currentProductImages } = useAuth();
 
   const handlePickImage = async () => {
-    if (images.length > 2) {
-      return;
-    }
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    try {
+      const selectedPhoto = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      });
 
-    if (!result.canceled) {
-      const createID = () => {
-        return Math.random().toString(36).slice(2, 9);
-      };
-      setImages([...images, { uri: result.assets[0].uri, id: createID() }]);
+      if (selectedPhoto.canceled) {
+        return;
+      }
+      const photoIsValid = await checkingPhotoSize(selectedPhoto.assets[0].uri);
+
+      if (photoIsValid) {
+        const photoFile = await photoFileConstructor(selectedPhoto);
+        setCurrentProductImages([...currentProductImages, photoFile]);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const handleRemoveImage = (id: string) => {
-    setImages(images.filter((image) => image.id !== id));
+  const handleRemoveImage = (image: PhotoFileDTO) => {
+    const newImages = currentProductImages.filter((i) => i.name !== image.name);
+    setCurrentProductImages(newImages);
   };
 
-  const Image = (image: Image) => (
+  const Image = (image: PhotoFileDTO) => (
     <Box justifyContent={"center"} w={100} h={100} mr={4}>
       <NativeImage
         source={{ uri: image.uri }}
@@ -59,7 +103,7 @@ const ImageFormPicker: React.FC = () => {
         p={1}
         top={1}
         right={1}
-        onPress={() => handleRemoveImage(image.id)}
+        onPress={() => handleRemoveImage(image)}
       >
         <X color={colors.white} size={16} weight="bold" />
       </Pressable>
@@ -69,7 +113,7 @@ const ImageFormPicker: React.FC = () => {
     <HStack w="100%" mt={6}>
       <TouchableOpacity
         onPress={handlePickImage}
-        disabled={images.length > 2}
+        disabled={currentProductImages.length > 2}
         style={{
           width: 100,
           height: 100,
@@ -82,7 +126,7 @@ const ImageFormPicker: React.FC = () => {
         <Plus size={30} color={colors.gray[400]} />
       </TouchableOpacity>
       <FlatList
-        data={images}
+        data={currentProductImages}
         ml={4}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => Image(item)}
