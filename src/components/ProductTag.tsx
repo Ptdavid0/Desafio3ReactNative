@@ -2,7 +2,7 @@ import { Box, Text } from "native-base";
 import React from "react";
 
 type ProductTagProps = {
-  condition?: string;
+  condition: string;
 };
 
 const ProductTag: React.FC<ProductTagProps> = ({ condition }) => {
@@ -17,7 +17,7 @@ const ProductTag: React.FC<ProductTagProps> = ({ condition }) => {
       shadow={2}
     >
       <Text color="white" fontSize="xs" fontFamily="heading">
-        {"Usado".toUpperCase()}
+        {condition.toUpperCase()}
       </Text>
     </Box>
   );

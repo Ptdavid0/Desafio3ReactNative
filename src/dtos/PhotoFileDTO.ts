@@ -1,5 +1,5 @@
 export interface PhotoFileDTO {
   uri: string;
+  name: string;
   type: string;
-  extension: string;
 }

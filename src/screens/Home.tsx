@@ -35,10 +35,12 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { useAuth } from "../hooks/useAuth";
 import api from "../service/api";
 import { getAllProducts } from "../storage/getAllProducts";
+import { getAllMyProducts } from "../storage/getAllMyProducts";
+import { getActiveProducts } from "../utils/productsUtils";
 
 const Home: React.FC = () => {
   const { colors } = useTheme();
-  const { user, setAllProducts } = useAuth();
+  const { user, setAllProducts, setAllMyProducts, allMyProducts } = useAuth();
 
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
 
@@ -60,8 +62,9 @@ const Home: React.FC = () => {
     useCallback(() => {
       const getProducts = async () => {
         const products = await getAllProducts();
+        const myProducts = await getAllMyProducts();
         setAllProducts(products);
-        console.log(products);
+        setAllMyProducts(myProducts);
       };
       getProducts();
     }, [])
@@ -122,7 +125,7 @@ const Home: React.FC = () => {
           </Box>
           <VStack>
             <Heading fontSize="lg" fontFamily="heading">
-              4
+              {getActiveProducts(allMyProducts).length}
             </Heading>
             <Text color="gray.500" fontSize="sm">
               anúncios ativos

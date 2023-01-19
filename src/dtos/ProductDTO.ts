@@ -1,10 +1,10 @@
-import { PhotoFileDTO } from "./AvatarFileDTO";
+import { PhotoFileDTO } from "./PhotoFileDTO";
 
 export type ProductDTO = {
   id: string;
   name: string;
   description: string;
-  price: string;
+  price: number;
   user_id: string;
   is_new: boolean;
   is_active: boolean;

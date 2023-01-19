@@ -5,7 +5,7 @@ import Input from "../components/Input";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "../routes/auth.routes";
 import AvatarImagePicker from "../components/AvatarImagePicker";
-import { PhotoFileDTO } from "../dtos/AvatarFileDTO";
+import { PhotoFileDTO } from "../dtos/PhotoFileDTO";
 import { addUser } from "../storage/addUser";
 import { useAuth } from "../hooks/useAuth";
 
