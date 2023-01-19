@@ -22,6 +22,7 @@ import ProductTag from "../components/ProductTag";
 import MySaleDetails from "../screens/MySaleDetails";
 import PreviewSale from "../screens/PreviewSale";
 import FormSale from "../screens/FormSale";
+import { ProductDTO } from "../dtos/ProductDTO";
 
 type AppRoutes = {
   Home: undefined;
@@ -29,7 +30,9 @@ type AppRoutes = {
   SaleDetails: undefined;
   MySaleDetails: undefined;
   FormSale: undefined;
-  PreviewSale: undefined;
+  PreviewSale: {
+    product: ProductDTO;
+  };
   MockSignOutScreen: undefined;
 };
 

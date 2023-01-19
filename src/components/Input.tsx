@@ -6,10 +6,14 @@ import {
 import React from "react";
 
 type Props = IInputProps & {
-  errorMessages?: string | null;
+  errorMessages?: any;
 };
 
-const Input: React.FC<Props> = ({ errorMessages, isInvalid, ...rest }) => {
+const Input: React.FC<Props> = ({
+  errorMessages = null,
+  isInvalid,
+  ...rest
+}) => {
   const invalid = isInvalid || !!errorMessages;
   return (
     <FormControl isInvalid={invalid} mb={4}>
@@ -37,7 +41,13 @@ const Input: React.FC<Props> = ({ errorMessages, isInvalid, ...rest }) => {
         {...rest}
       />
       {invalid && (
-        <FormControl.ErrorMessage>{errorMessages}</FormControl.ErrorMessage>
+        <FormControl.ErrorMessage
+          _text={{
+            color: "red.500",
+          }}
+        >
+          {errorMessages}
+        </FormControl.ErrorMessage>
       )}
     </FormControl>
   );

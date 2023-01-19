@@ -28,7 +28,7 @@ export type AuthContextData = {
   setAllMyProducts: React.Dispatch<React.SetStateAction<ProductDTO[]>>;
   currentProductImages: PhotoFileDTO[];
   setCurrentProductImages: React.Dispatch<React.SetStateAction<PhotoFileDTO[]>>;
-  generateFormData: () => FormData;
+  generateImageForm: () => FormData;
   cleanCurrentProductImages: () => void;
 };
 
@@ -55,7 +55,7 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     setUser(userData);
   };
 
-  const generateFormData = () => {
+  const generateImageForm = () => {
     const formData = new FormData();
     currentProductImages.forEach((image) => {
       formData.append("images", image as any);
@@ -160,7 +160,7 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     setAllMyProducts,
     currentProductImages,
     setCurrentProductImages,
-    generateFormData,
+    generateImageForm,
     cleanCurrentProductImages,
   };
 

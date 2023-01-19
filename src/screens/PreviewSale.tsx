@@ -6,6 +6,7 @@ import {
   HStack,
   Heading,
   ScrollView,
+  useToast,
 } from "native-base";
 import React from "react";
 import { SliderBox } from "react-native-image-slider-box";
@@ -20,14 +21,52 @@ import {
   Money,
   QrCode,
   Tag,
-  WhatsappLogo,
 } from "phosphor-react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
+import { ProductDTO } from "../dtos/ProductDTO";
+import { useAuth } from "../hooks/useAuth";
+import api from "../service/api";
+import { addProduct } from "../storage/addProduct";
+import { addImagesOfProduct } from "../storage/addImagesOfProduct";
+import { AppNavigatorRoutesProps } from "../routes/app.routes";
+
+interface Params {
+  product: ProductDTO;
+}
 
 const PreviewSale: React.FC = () => {
   const { colors, sizes, fonts } = useTheme();
-  const { goBack, navigate } = useNavigation();
+  const { goBack, navigate } = useNavigation<AppNavigatorRoutesProps>();
+  const toast = useToast();
+  const route = useRoute();
+  const { currentProductImages, user, cleanCurrentProductImages } = useAuth();
+  const { product } = route.params as Params;
   const width = Dimensions.get("window").width / 3.3;
+
+  const handlePublish = async () => {
+    const updatedProduct: ProductDTO = {
+      ...product,
+      product_images: currentProductImages,
+    };
+    const productAdded = await addProduct(updatedProduct);
+    if (productAdded) {
+      toast.show({
+        title: "Anúncio publicado com sucesso!",
+        duration: 3000,
+        placement: "top",
+      });
+      navigate("MySales");
+      cleanCurrentProductImages();
+    } else {
+      toast.show({
+        title: "Erro ao publicar anúncio",
+        duration: 3000,
+        placement: "top",
+      });
+    }
+  };
+
   return (
     <VStack flex={1} bg="gray.200">
       <VStack alignItems="center" pt={20} bg="blue.500" pb={6}>
@@ -43,11 +82,7 @@ const PreviewSale: React.FC = () => {
         </Text>
       </VStack>
       <SliderBox
-        images={[
-          "https://source.unsplash.com/1024x768/?nature",
-          "https://source.unsplash.com/1024x768/?water",
-          "https://source.unsplash.com/1024x768/?tree",
-        ]}
+        images={currentProductImages}
         sliderBoxHeight={280}
         dotStyle={{
           width: width,
@@ -65,14 +100,14 @@ const PreviewSale: React.FC = () => {
       />
       <Box p={6} flexDirection="row" alignItems="center">
         <Image
-          source={require("../assets/avatar.png")}
+          source={{ uri: `${api.defaults.baseURL}/images/${user.avatar}` }}
           alt="image base"
           size={25}
-          borderRadius={8}
+          rounded="full"
           mr={2}
         />
         <Text fontSize="md" fontFamily="body" color="gray.500">
-          Pedro Antônio David
+          {user?.name}
         </Text>
       </Box>
 
@@ -102,17 +137,14 @@ const PreviewSale: React.FC = () => {
                 fontSize={"xl"}
                 color={"blue.500"}
               >
-                59,90
+                {product.price}
               </Heading>
             </HStack>
           </HStack>
           {/* Description */}
           <Box mt={2}>
             <Text fontSize="md" fontFamily="body" color="gray.500">
-              lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
+              {product.description}
             </Text>
           </Box>
           {/* Exchange */}
@@ -121,7 +153,7 @@ const PreviewSale: React.FC = () => {
               Aceita troca ?{" "}
             </Text>
             <Text fontSize="md" fontFamily="body" color="gray.500">
-              Sim
+              {product.accept_trade ? "Sim" : "Não"}
             </Text>
           </Box>
           {/* Payment Methods */}
@@ -129,38 +161,46 @@ const PreviewSale: React.FC = () => {
             <Text fontSize="md" fontFamily="heading" color="gray.600">
               Meios de pagamento:
             </Text>
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <QrCode size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Pix
-              </Text>
-            </Box>
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <Barcode size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Boleto
-              </Text>
-            </Box>
-
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <Money size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Dinheiro
-              </Text>
-            </Box>
-
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <CreditCard size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Cartão de Crédito
-              </Text>
-            </Box>
-            <Box mt={2} flexDirection="row" alignItems="center" mb={10}>
-              <Bank size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Depósito Bancário
-              </Text>
-            </Box>
+            {product.payment_methods.includes("pix") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <QrCode size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Pix
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("boleto") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <Barcode size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Boleto
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("cash") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <Money size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Dinheiro
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("card") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <CreditCard size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Cartão de Crédito
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("deposit") && (
+              <Box mt={2} flexDirection="row" alignItems="center" mb={10}>
+                <Bank size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Depósito Bancário
+                </Text>
+              </Box>
+            )}
           </Box>
         </ScrollView>
       </VStack>
@@ -181,7 +221,7 @@ const PreviewSale: React.FC = () => {
           title="Voltar e editar"
           type="Secundary"
           size={"mid"}
-          onPress={() => goBack()}
+          onPress={() => navigate("FormSale")}
           icon={<ArrowLeft size={20} color={colors.gray[700]} />}
         />
 
@@ -189,6 +229,7 @@ const PreviewSale: React.FC = () => {
           title="Publicar"
           type="Primary"
           size={"mid"}
+          onPress={handlePublish}
           icon={
             <Tag
               size={20}
