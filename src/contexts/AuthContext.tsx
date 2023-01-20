@@ -28,7 +28,6 @@ export type AuthContextData = {
   setAllMyProducts: React.Dispatch<React.SetStateAction<ProductDTO[]>>;
   currentProductImages: PhotoFileDTO[];
   setCurrentProductImages: React.Dispatch<React.SetStateAction<PhotoFileDTO[]>>;
-  generateImageForm: () => FormData;
   cleanCurrentProductImages: () => void;
 };
 
@@ -53,14 +52,6 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const userAndTokenUpdate = async (userData: UserDTO, token: string) => {
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     setUser(userData);
-  };
-
-  const generateImageForm = () => {
-    const formData = new FormData();
-    currentProductImages.forEach((image) => {
-      formData.append("images", image as any);
-    });
-    return formData;
   };
 
   const cleanCurrentProductImages = () => {
@@ -160,7 +151,6 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     setAllMyProducts,
     currentProductImages,
     setCurrentProductImages,
-    generateImageForm,
     cleanCurrentProductImages,
   };
 

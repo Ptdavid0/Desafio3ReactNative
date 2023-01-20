@@ -11,11 +11,16 @@ export type ProductDTO = {
   accept_trade: boolean;
   created_at: string;
   updated_at: string;
-  product_images: PhotoFileDTO[];
+  product_images: ProductImages[];
   payment_methods: string[];
   user: {
     avatar: string;
     name: string;
     tel: string;
   };
+};
+
+export type ProductImages = {
+  id: string;
+  path: string;
 };

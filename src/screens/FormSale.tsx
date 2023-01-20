@@ -48,10 +48,8 @@ const CreateSale: React.FC = () => {
   });
 
   const onSubmit = (data: any) => {
-    console.log("here");
     const product = {
       ...data,
-      price: data.price * 100,
       payment_methods: paymentMethods,
     };
     navigate("PreviewSale", { product, reset });

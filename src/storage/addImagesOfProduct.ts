@@ -1,25 +1,23 @@
 import axios from "axios";
 import api from "../service/api";
 
-export const addImagesOfProduct = async (
-  product_id: string,
-  images: FormData
-) => {
+export const addImagesOfProduct = async (productId: string, images: any[]) => {
   try {
-    const response = await api.post(
-      `/products/images`,
-      {
-        product_id,
-        images,
-      },
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const form = new FormData();
+    form.append("product_id", productId);
+    console.log(productId);
 
-    return true;
+    images.forEach((item) => {
+      form.append("images", item);
+    });
+
+    const response = await api.post("/products/images/", form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
+    return false;
   } catch (error) {
     if (axios.isAxiosError(error)) console.log(error.response?.data);
     else console.log(error);

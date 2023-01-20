@@ -62,7 +62,7 @@ const MySaleDetails: React.FC = () => {
         setLoading(false);
       }
       fetchProduct();
-    }, [])
+    }, [productId])
   );
 
   console.log(product);
@@ -71,12 +71,19 @@ const MySaleDetails: React.FC = () => {
     return <Loading />;
   }
 
+  const getProductImages = () => {
+    const images = product.product_images.map(({ path }) => {
+      return `${api.defaults.baseURL}/images/${path}`;
+    });
+    return images;
+  };
+
   return (
     <VStack flex={1} bg="gray.200" pt={6}>
       <SliderBox
         images={
           product.product_images.length > 0
-            ? product.product_images
+            ? getProductImages()
             : [
                 "https://source.unsplash.com/1024x768/?nature",
                 "https://source.unsplash.com/1024x768/?water",
