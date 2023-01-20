@@ -6,6 +6,7 @@ import {
   HStack,
   Heading,
   ScrollView,
+  useToast,
 } from "native-base";
 import React from "react";
 import { SliderBox } from "react-native-image-slider-box";
@@ -20,18 +21,52 @@ import {
   QrCode,
   WhatsappLogo,
 } from "phosphor-react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
+import { ProductDTO } from "../dtos/ProductDTO";
+import { fetchProductDetails } from "../storage/fetchProductDetails";
+
+type Params = {
+  productId: string;
+};
 
 const SaleDetails: React.FC = () => {
   const { colors } = useTheme();
+  const { goBack } = useNavigation();
+  const route = useRoute();
+  const { productId } = route.params as Params;
+  const toast = useToast();
+  const [loading, setLoading] = React.useState(true);
+  const [product, setProduct] = React.useState<ProductDTO>({} as ProductDTO);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchProduct() {
+        const productFetched = await fetchProductDetails(productId);
+        if (productFetched) {
+          setProduct(productFetched);
+        } else {
+          toast.show({
+            title: "Erro ao carregar anúncio!",
+            duration: 3000,
+            placement: "top",
+          });
+        }
+        setLoading(false);
+      }
+      fetchProduct();
+    }, [])
+  );
+
   const width = Dimensions.get("window").width / 3.3;
   return (
     <VStack flex={1} bg="gray.200" pt={6}>
       <SliderBox
-        images={[
-          "https://source.unsplash.com/1024x768/?nature",
-          "https://source.unsplash.com/1024x768/?water",
-          "https://source.unsplash.com/1024x768/?tree",
-        ]}
+        images={
+          product.product_images.length > 0
+            ? product.product_images
+            : ["https://www.ikea.com/PIAimages/0452012_PE694365_S5.JPG?f=xxs"]
+        }
         sliderBoxHeight={280}
         dotStyle={{
           width: width,

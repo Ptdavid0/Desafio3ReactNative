@@ -27,11 +27,16 @@ import { ProductDTO } from "../dtos/ProductDTO";
 type AppRoutes = {
   Home: undefined;
   MySales: undefined;
-  SaleDetails: undefined;
-  MySaleDetails: undefined;
+  SaleDetails: {
+    productId: string;
+  };
+  MySaleDetails: {
+    productId: string;
+  };
   FormSale: undefined;
   PreviewSale: {
     product: ProductDTO;
+    reset: () => void;
   };
   MockSignOutScreen: undefined;
 };
@@ -103,7 +108,7 @@ const AppRoutes: React.FC = () => {
             return (
               <Pressable
                 ml={4}
-                onPress={() => {}}
+                onPress={() => navigate("FormSale")}
                 mr={10}
                 mt={Platform.OS === "android" ? 0 : 30}
               >

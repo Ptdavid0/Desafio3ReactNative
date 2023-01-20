@@ -6,6 +6,7 @@ import {
   HStack,
   Heading,
   ScrollView,
+  useToast,
 } from "native-base";
 import React from "react";
 import { SliderBox } from "react-native-image-slider-box";
@@ -20,21 +21,68 @@ import {
   Power,
   QrCode,
   TrashSimple,
-  WhatsappLogo,
 } from "phosphor-react-native";
 import ProductTag from "../components/ProductTag";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
+import { ProductDTO } from "../dtos/ProductDTO";
+import api from "../service/api";
+import { fetchProductDetails } from "../storage/fetchProductDetails";
+import Loading from "../components/Loading";
+
+type Params = {
+  productId: string;
+};
 
 const MySaleDetails: React.FC = () => {
   const { colors } = useTheme();
+  const { goBack } = useNavigation();
+  const route = useRoute();
+  const toast = useToast();
+  const [loading, setLoading] = React.useState(true);
+  const [product, setProduct] = React.useState<ProductDTO>({} as ProductDTO);
+
+  const { productId } = route.params as Params;
+
   const width = Dimensions.get("window").width / 3.3;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchProduct() {
+        const productFetched = await fetchProductDetails(productId);
+        if (productFetched) {
+          setProduct(productFetched);
+        } else {
+          toast.show({
+            title: "Erro ao carregar anúncio!",
+            duration: 3000,
+            placement: "top",
+          });
+        }
+        setLoading(false);
+      }
+      fetchProduct();
+    }, [])
+  );
+
+  console.log(product);
+
+  if (loading || !product) {
+    return <Loading />;
+  }
+
   return (
     <VStack flex={1} bg="gray.200" pt={6}>
       <SliderBox
-        images={[
-          "https://source.unsplash.com/1024x768/?nature",
-          "https://source.unsplash.com/1024x768/?water",
-          "https://source.unsplash.com/1024x768/?tree",
-        ]}
+        images={
+          product.product_images.length > 0
+            ? product.product_images
+            : [
+                "https://source.unsplash.com/1024x768/?nature",
+                "https://source.unsplash.com/1024x768/?water",
+                "https://source.unsplash.com/1024x768/?tree",
+              ]
+        }
         sliderBoxHeight={280}
         dotStyle={{
           width: width,
@@ -52,14 +100,16 @@ const MySaleDetails: React.FC = () => {
       />
       <Box p={6} flexDirection="row" alignItems="center">
         <Image
-          source={require("../assets/avatar.png")}
+          source={{
+            uri: `${api.defaults.baseURL}/images/${product.user.avatar}`,
+          }}
           alt="image base"
           size={25}
-          borderRadius={8}
+          rounded="full"
           mr={2}
         />
         <Text fontSize="md" fontFamily="body" color="gray.500">
-          Pedro Antônio David
+          {product.user.name}
         </Text>
       </Box>
 
@@ -84,17 +134,14 @@ const MySaleDetails: React.FC = () => {
                 fontSize={"xl"}
                 color={"blue.500"}
               >
-                59,90
+                {product.price / 100}
               </Heading>
             </HStack>
           </HStack>
           {/* Description */}
           <Box mt={2}>
             <Text fontSize="md" fontFamily="body" color="gray.500">
-              lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
+              {product.description}
             </Text>
           </Box>
           {/* Exchange */}
@@ -103,7 +150,7 @@ const MySaleDetails: React.FC = () => {
               Aceita troca ?{" "}
             </Text>
             <Text fontSize="md" fontFamily="body" color="gray.500">
-              Sim
+              {product.accept_trade ? "Sim" : "Não"}
             </Text>
           </Box>
 
@@ -111,46 +158,54 @@ const MySaleDetails: React.FC = () => {
             <Text fontSize="md" fontFamily="heading" color="gray.600">
               Condição do produto:{"   "}
             </Text>
-            <ProductTag condition="Novo" />
+            <ProductTag condition={product.is_new ? "Novo" : "Usado"} />
           </Box>
 
           {/* Payment Methods */}
-          <Box mt={4}>
+          <Box mt={4} mb={12}>
             <Text fontSize="md" fontFamily="heading" color="gray.600">
               Meios de pagamento:
             </Text>
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <QrCode size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Pix
-              </Text>
-            </Box>
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <Barcode size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Boleto
-              </Text>
-            </Box>
-
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <Money size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Dinheiro
-              </Text>
-            </Box>
-
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <CreditCard size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Cartão de Crédito
-              </Text>
-            </Box>
-            <Box mt={2} flexDirection="row" alignItems="center" mb={10}>
-              <Bank size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Depósito Bancário
-              </Text>
-            </Box>
+            {product.payment_methods.includes("pix") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <QrCode size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Pix
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("boleto") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <Barcode size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Boleto
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("cash") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <Money size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Dinheiro
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("card") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <CreditCard size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Cartão de Crédito
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("deposit") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <Bank size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Depósito Bancário
+                </Text>
+              </Box>
+            )}
           </Box>
           <Button
             title="Desativar anúncio"

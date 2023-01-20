@@ -40,7 +40,8 @@ import { getActiveProducts } from "../utils/productsUtils";
 
 const Home: React.FC = () => {
   const { colors } = useTheme();
-  const { user, setAllProducts, setAllMyProducts, allMyProducts } = useAuth();
+  const { user, setAllProducts, setAllMyProducts, allMyProducts, allProducts } =
+    useAuth();
 
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
 
@@ -175,7 +176,7 @@ const Home: React.FC = () => {
       <Header />
       <MyProducts />
       <FilterProducts />
-      <ProductsList />
+      <ProductsList products={allProducts} />
 
       <BottomSheet
         ref={bottomSheetRef}

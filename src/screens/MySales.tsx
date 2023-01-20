@@ -6,19 +6,14 @@ import ProductsList from "../components/ProductList";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllMyProducts } from "../storage/getAllMyProducts";
 import { ProductDTO } from "../dtos/ProductDTO";
+import NoProducts from "../components/NoProduct";
 
 const MySales: React.FC = () => {
   const [products, setProducts] = React.useState<ProductDTO[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [selectedFilter, setSelectedFilter] = React.useState("all");
   const { colors } = useTheme();
-  const NoProducts = () => (
-    <Center flex={1}>
-      <Text fontSize="lg" color="gray.600" fontFamily="body">
-        Você ainda não vendeu nada
-      </Text>
-    </Center>
-  );
+
   useFocusEffect(
     useCallback(() => {
       const getProducts = async () => {
@@ -30,8 +25,21 @@ const MySales: React.FC = () => {
     }, [])
   );
 
+  const displayProducts = React.useMemo(() => {
+    if (selectedFilter === "active") {
+      return products.filter((product) => product.is_active);
+    } else if (selectedFilter === "inactive") {
+      return products.filter((product) => !product.is_active);
+    } else if (selectedFilter === "new") {
+      return products.filter((product) => product.is_new);
+    } else if (selectedFilter === "used") {
+      return products.filter((product) => !product.is_new);
+    }
+    return products;
+  }, [products, selectedFilter]);
+
   if (products.length === 0) {
-    return <NoProducts />;
+    return <NoProducts message="Você ainda não vendeu nada" />;
   }
 
   return (
@@ -39,7 +47,7 @@ const MySales: React.FC = () => {
       <VStack flex={1} bg="gray.200">
         <HStack justifyContent="space-between" alignItems="center">
           <Text fontSize="md" color="gray.600" fontFamily="body">
-            {products.length} anúncios
+            {displayProducts.length} anúncios
           </Text>
           <Select
             w={32}
@@ -65,7 +73,11 @@ const MySales: React.FC = () => {
             <Select.Item label="Usado" value="used" />
           </Select>
         </HStack>
-        <ProductsList showAvatar={false} isMyProduct products={products} />
+        <ProductsList
+          showAvatar={false}
+          isMyProduct
+          products={displayProducts}
+        />
       </VStack>
     </VStack>
   );

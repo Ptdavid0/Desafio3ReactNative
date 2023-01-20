@@ -28,11 +28,11 @@ import { ProductDTO } from "../dtos/ProductDTO";
 import { useAuth } from "../hooks/useAuth";
 import api from "../service/api";
 import { addProduct } from "../storage/addProduct";
-import { addImagesOfProduct } from "../storage/addImagesOfProduct";
 import { AppNavigatorRoutesProps } from "../routes/app.routes";
 
 interface Params {
   product: ProductDTO;
+  reset: () => void;
 }
 
 const PreviewSale: React.FC = () => {
@@ -41,7 +41,7 @@ const PreviewSale: React.FC = () => {
   const toast = useToast();
   const route = useRoute();
   const { currentProductImages, user, cleanCurrentProductImages } = useAuth();
-  const { product } = route.params as Params;
+  const { product, reset } = route.params as Params;
   const width = Dimensions.get("window").width / 3.3;
 
   const handlePublish = async () => {
@@ -56,6 +56,7 @@ const PreviewSale: React.FC = () => {
         duration: 3000,
         placement: "top",
       });
+      reset();
       navigate("MySales");
       cleanCurrentProductImages();
     } else {
@@ -137,7 +138,7 @@ const PreviewSale: React.FC = () => {
                 fontSize={"xl"}
                 color={"blue.500"}
               >
-                {product.price}
+                {product.price / 100}
               </Heading>
             </HStack>
           </HStack>
