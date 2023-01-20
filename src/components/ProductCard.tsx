@@ -30,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       productId: product.id,
     });
   };
-  const { name, price, description } = product;
+  const { name, price } = product;
   return (
     <VStack mt={6} borderRadius={6} w={"47%"}>
       <Pressable onPress={handleNavigateToSaleDetails}>
@@ -68,7 +68,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Box>
         <Image
           alt="imageProduct"
-          source={require("../assets/tenis.jpg")}
+          source={
+            product.product_images && product.product_images.length > 0
+              ? {
+                  uri: `${api.defaults.baseURL}/images/${product.product_images[0].path}`,
+                }
+              : require("../assets/tenis.jpg")
+          }
           mr={2}
           w={"100%"}
           h={110}

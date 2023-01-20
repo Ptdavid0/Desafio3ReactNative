@@ -45,11 +45,7 @@ const PreviewSale: React.FC = () => {
   const width = Dimensions.get("window").width / 3.3;
 
   const handlePublish = async () => {
-    const updatedProduct: ProductDTO = {
-      ...product,
-      product_images: currentProductImages,
-    };
-    const productAdded = await addProduct(updatedProduct);
+    const productAdded = await addProduct(product, currentProductImages);
     if (productAdded) {
       toast.show({
         title: "Anúncio publicado com sucesso!",
