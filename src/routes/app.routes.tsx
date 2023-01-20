@@ -3,7 +3,7 @@ import {
   createBottomTabNavigator,
   BottomTabNavigationProp,
 } from "@react-navigation/bottom-tabs";
-import { Box, Pressable, useTheme } from "native-base";
+import { Box, Pressable, Text, useTheme } from "native-base";
 import { Platform } from "react-native";
 import Home from "../screens/Home";
 import MySales from "../screens/MySales";
@@ -103,19 +103,33 @@ const AppRoutes: React.FC = () => {
             backgroundColor: colors.gray[200],
             elevation: 0,
             shadowOpacity: 0,
+            marginTop: 10,
           },
-          headerRight: () => {
+          header: () => {
             return (
-              <Pressable
-                ml={4}
-                onPress={() => navigate("FormSale")}
-                mr={10}
-                mt={Platform.OS === "android" ? 0 : 30}
+              <Box
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+                height={Platform.OS === "android" ? 60 : 120}
+                bg={colors.gray[200]}
+                paddingTop={Platform.OS === "android" ? 0 : 50}
               >
-                <Plus size={24} weight="bold" />
-              </Pressable>
+                <Pressable ml={4} onPress={() => goBack()} mr={10}>
+                  <ArrowLeft size={24} weight="bold" />
+                </Pressable>
+
+                <Text fontSize={sizes[5]} fontFamily={fonts.heading}>
+                  Meus anúncios
+                </Text>
+
+                <Pressable ml={4} onPress={() => navigate("FormSale")} mr={10}>
+                  <Plus size={24} weight="bold" />
+                </Pressable>
+              </Box>
             );
           },
+
           tabBarLabel: "Minhas Vendas",
           tabBarIcon: ({ color, size, focused }) => {
             return <Tag color={color} size={size} weight="bold" />;

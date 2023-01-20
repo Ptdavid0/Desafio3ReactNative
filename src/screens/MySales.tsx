@@ -43,7 +43,7 @@ const MySales: React.FC = () => {
   }
 
   return (
-    <VStack flex={1} bg="gray.200" pt={16} px={6}>
+    <VStack flex={1} bg="gray.200" pt={6} px={6}>
       <VStack flex={1} bg="gray.200">
         <HStack justifyContent="space-between" alignItems="center">
           <Text fontSize="md" color="gray.600" fontFamily="body">
