@@ -41,6 +41,7 @@ const CreateSale: React.FC = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -50,10 +51,10 @@ const CreateSale: React.FC = () => {
     console.log("here");
     const product = {
       ...data,
-      price: data.price / 100,
+      price: data.price * 100,
       payment_methods: paymentMethods,
     };
-    navigate("PreviewSale", { product });
+    navigate("PreviewSale", { product, reset });
   };
 
   const Title = ({ children }: any) => (

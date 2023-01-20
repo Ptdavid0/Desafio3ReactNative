@@ -22,8 +22,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
   const { user } = useAuth();
   const handleNavigateToSaleDetails = () => {
-    if (isMyProduct) return navigate("MySaleDetails");
-    navigate("SaleDetails");
+    if (isMyProduct)
+      return navigate("MySaleDetails", {
+        productId: product.id,
+      });
+    navigate("SaleDetails", {
+      productId: product.id,
+    });
   };
   const { name, price, description } = product;
   return (
@@ -77,7 +82,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             R$
           </Heading>
           <Heading fontFamily={"heading"} fontSize={"lg"}>
-            {price}
+            {price / 100}
           </Heading>
         </HStack>
       </Pressable>

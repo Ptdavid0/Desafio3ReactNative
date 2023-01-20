@@ -13,4 +13,9 @@ export type ProductDTO = {
   updated_at: string;
   product_images: PhotoFileDTO[];
   payment_methods: string[];
+  user: {
+    avatar: string;
+    name: string;
+    tel: string;
+  };
 };
