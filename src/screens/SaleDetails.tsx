@@ -8,7 +8,7 @@ import {
   ScrollView,
   useToast,
 } from "native-base";
-import React from "react";
+import React, { useEffect } from "react";
 import { SliderBox } from "react-native-image-slider-box";
 import { useTheme } from "native-base";
 import { Dimensions } from "react-native";
@@ -25,6 +25,10 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { fetchProductDetails } from "../storage/fetchProductDetails";
+import Loading from "../components/Loading";
+import api from "../service/api";
+import { getProductImages } from "../utils/productsUtils";
+import HeaderDetails from "../components/SaleDetailHeader";
 
 type Params = {
   productId: string;
@@ -55,17 +59,26 @@ const SaleDetails: React.FC = () => {
         setLoading(false);
       }
       fetchProduct();
-    }, [])
+    }, [product])
   );
+
+  if (loading || !product) {
+    return <Loading />;
+  }
 
   const width = Dimensions.get("window").width / 3.3;
   return (
-    <VStack flex={1} bg="gray.200" pt={6}>
+    <VStack flex={1} bg="gray.200">
+      <HeaderDetails isNew={product.is_new} />
       <SliderBox
         images={
           product.product_images.length > 0
-            ? product.product_images
-            : ["https://www.ikea.com/PIAimages/0452012_PE694365_S5.JPG?f=xxs"]
+            ? getProductImages(product)
+            : [
+                "https://source.unsplash.com/1024x768/?nature",
+                "https://source.unsplash.com/1024x768/?water",
+                "https://source.unsplash.com/1024x768/?tree",
+              ]
         }
         sliderBoxHeight={280}
         dotStyle={{
@@ -84,10 +97,12 @@ const SaleDetails: React.FC = () => {
       />
       <Box p={6} flexDirection="row" alignItems="center">
         <Image
-          source={require("../assets/avatar.png")}
+          source={{
+            uri: `${api.defaults.baseURL}/images/${product.user.avatar}`,
+          }}
           alt="image base"
           size={25}
-          borderRadius={8}
+          rounded="full"
           mr={2}
         />
         <Text fontSize="md" fontFamily="body" color="gray.500">

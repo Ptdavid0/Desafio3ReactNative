@@ -176,7 +176,7 @@ const Home: React.FC = () => {
       <Header />
       <MyProducts />
       <FilterProducts />
-      <ProductsList products={allProducts} />
+      <ProductsList products={allProducts} showAvatar isMyProduct={false} />
 
       <BottomSheet
         ref={bottomSheetRef}

@@ -7,12 +7,12 @@ import ProductCard from "./ProductCard";
 type ProductsListProps = {
   products?: ProductDTO[];
   showAvatar?: boolean;
-  isMyProduct?: boolean;
+  isMyProduct: boolean;
 };
 
 const ProductsList: React.FC<ProductsListProps> = ({
   showAvatar = false,
-  isMyProduct = false,
+  isMyProduct,
   products,
 }) => {
   if (!products || products.length === 0) {

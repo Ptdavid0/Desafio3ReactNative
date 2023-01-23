@@ -7,17 +7,22 @@ import {
   Heading,
   ScrollView,
   useToast,
+  Pressable,
 } from "native-base";
 import React from "react";
 import { SliderBox } from "react-native-image-slider-box";
 import { useTheme } from "native-base";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 import Button from "../components/Button";
 import {
+  ArrowLeft,
   Bank,
   Barcode,
   CreditCard,
   Money,
+  PencilSimple,
+  PencilSimpleLine,
+  Plus,
   Power,
   QrCode,
   TrashSimple,
@@ -29,14 +34,17 @@ import { ProductDTO } from "../dtos/ProductDTO";
 import api from "../service/api";
 import { fetchProductDetails } from "../storage/fetchProductDetails";
 import Loading from "../components/Loading";
+import { getProductImages } from "../utils/productsUtils";
+import { AppNavigatorRoutesProps } from "../routes/app.routes";
+import HeaderDetails from "../components/SaleDetailHeader";
 
 type Params = {
   productId: string;
 };
 
 const MySaleDetails: React.FC = () => {
-  const { colors } = useTheme();
-  const { goBack } = useNavigation();
+  const { colors, fonts, sizes } = useTheme();
+  const { goBack, navigate } = useNavigation<AppNavigatorRoutesProps>();
   const route = useRoute();
   const toast = useToast();
   const [loading, setLoading] = React.useState(true);
@@ -65,25 +73,17 @@ const MySaleDetails: React.FC = () => {
     }, [productId])
   );
 
-  console.log(product);
-
   if (loading || !product) {
     return <Loading />;
   }
 
-  const getProductImages = () => {
-    const images = product.product_images.map(({ path }) => {
-      return `${api.defaults.baseURL}/images/${path}`;
-    });
-    return images;
-  };
-
   return (
-    <VStack flex={1} bg="gray.200" pt={6}>
+    <VStack flex={1} bg="gray.200">
+      <HeaderDetails isMySale />
       <SliderBox
         images={
           product.product_images.length > 0
-            ? getProductImages()
+            ? getProductImages(product)
             : [
                 "https://source.unsplash.com/1024x768/?nature",
                 "https://source.unsplash.com/1024x768/?water",
@@ -165,7 +165,7 @@ const MySaleDetails: React.FC = () => {
             <Text fontSize="md" fontFamily="heading" color="gray.600">
               Condição do produto:{"   "}
             </Text>
-            <ProductTag condition={product.is_new ? "Novo" : "Usado"} />
+            <ProductTag condition={product.is_new} />
           </Box>
 
           {/* Payment Methods */}

@@ -134,7 +134,7 @@ const PreviewSale: React.FC = () => {
                 fontSize={"xl"}
                 color={"blue.500"}
               >
-                {product.price / 100}
+                {product.price}
               </Heading>
             </HStack>
           </HStack>

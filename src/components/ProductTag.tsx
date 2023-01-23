@@ -2,10 +2,11 @@ import { Box, Text } from "native-base";
 import React from "react";
 
 type ProductTagProps = {
-  condition: string;
+  condition: boolean;
 };
 
 const ProductTag: React.FC<ProductTagProps> = ({ condition }) => {
+  const conditionText = condition ? "NOVO" : "USADO";
   return (
     <Box
       bg="blue.500"
@@ -17,7 +18,7 @@ const ProductTag: React.FC<ProductTagProps> = ({ condition }) => {
       shadow={2}
     >
       <Text color="white" fontSize="xs" fontFamily="heading">
-        {condition.toUpperCase()}
+        {conditionText}
       </Text>
     </Box>
   );

@@ -3,7 +3,7 @@ import {
   createBottomTabNavigator,
   BottomTabNavigationProp,
 } from "@react-navigation/bottom-tabs";
-import { Box, Pressable, useTheme } from "native-base";
+import { Box, Pressable, Text, useTheme } from "native-base";
 import { Platform } from "react-native";
 import Home from "../screens/Home";
 import MySales from "../screens/MySales";
@@ -33,7 +33,7 @@ type AppRoutes = {
   MySaleDetails: {
     productId: string;
   };
-  FormSale: undefined;
+  FormSale: undefined | { product: ProductDTO };
   PreviewSale: {
     product: ProductDTO;
     reset: () => void;
@@ -103,19 +103,34 @@ const AppRoutes: React.FC = () => {
             backgroundColor: colors.gray[200],
             elevation: 0,
             shadowOpacity: 0,
+            marginTop: 10,
           },
-          headerRight: () => {
+          header: () => {
             return (
-              <Pressable
-                ml={4}
-                onPress={() => navigate("FormSale")}
-                mr={10}
-                mt={Platform.OS === "android" ? 0 : 30}
+              <Box
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+                height={Platform.OS === "android" ? 60 : 120}
+                bg={colors.gray[200]}
+                paddingTop={Platform.OS === "android" ? 0 : 50}
+                px={sizes[2]}
               >
-                <Plus size={24} weight="bold" />
-              </Pressable>
+                <Pressable onPress={() => goBack()} mr={10}>
+                  <ArrowLeft size={24} weight="bold" />
+                </Pressable>
+
+                <Text fontSize={sizes[5]} fontFamily={fonts.heading}>
+                  Meus anúncios
+                </Text>
+
+                <Pressable ml={4} onPress={() => navigate("FormSale")}>
+                  <Plus size={24} weight="bold" />
+                </Pressable>
+              </Box>
             );
           },
+
           tabBarLabel: "Minhas Vendas",
           tabBarIcon: ({ color, size, focused }) => {
             return <Tag color={color} size={size} weight="bold" />;
@@ -165,28 +180,7 @@ const AppRoutes: React.FC = () => {
           tabBarButton: () => null,
           headerTitle: "",
           tabBarStyle: { display: "none" },
-          headerStyle: {
-            backgroundColor: colors.gray[200],
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerLeft: () => {
-            return (
-              <Pressable
-                ml={4}
-                onPress={() => goBack()}
-                mr={10}
-                mt={Platform.OS === "android" ? 0 : 25}
-              >
-                <ArrowLeft size={24} weight="bold" />
-              </Pressable>
-            );
-          },
-          headerRight: () => (
-            <Box mr={4} mt={Platform.OS === "android" ? 0 : 25}>
-              <ProductTag />
-            </Box>
-          ),
+          headerShown: false,
         }}
       />
 
@@ -197,28 +191,7 @@ const AppRoutes: React.FC = () => {
           tabBarButton: () => null,
           headerTitle: "",
           tabBarStyle: { display: "none" },
-          headerStyle: {
-            backgroundColor: colors.gray[200],
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerLeft: () => {
-            return (
-              <Pressable
-                ml={4}
-                onPress={() => navigate("MySales")}
-                mr={10}
-                mt={Platform.OS === "android" ? 0 : 25}
-              >
-                <ArrowLeft size={24} weight="bold" />
-              </Pressable>
-            );
-          },
-          headerRight: () => (
-            <Box mr={4} mt={Platform.OS === "android" ? 0 : 25}>
-              <PencilSimple size={24} weight="bold" />
-            </Box>
-          ),
+          headerShown: false,
         }}
       />
 
