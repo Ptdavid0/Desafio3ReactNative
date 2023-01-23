@@ -33,7 +33,7 @@ type AppRoutes = {
   MySaleDetails: {
     productId: string;
   };
-  FormSale: undefined;
+  FormSale: undefined | { product: ProductDTO };
   PreviewSale: {
     product: ProductDTO;
     reset: () => void;
@@ -114,8 +114,9 @@ const AppRoutes: React.FC = () => {
                 height={Platform.OS === "android" ? 60 : 120}
                 bg={colors.gray[200]}
                 paddingTop={Platform.OS === "android" ? 0 : 50}
+                px={sizes[2]}
               >
-                <Pressable ml={4} onPress={() => goBack()} mr={10}>
+                <Pressable onPress={() => goBack()} mr={10}>
                   <ArrowLeft size={24} weight="bold" />
                 </Pressable>
 
@@ -123,7 +124,7 @@ const AppRoutes: React.FC = () => {
                   Meus anúncios
                 </Text>
 
-                <Pressable ml={4} onPress={() => navigate("FormSale")} mr={10}>
+                <Pressable ml={4} onPress={() => navigate("FormSale")}>
                   <Plus size={24} weight="bold" />
                 </Pressable>
               </Box>
@@ -179,28 +180,7 @@ const AppRoutes: React.FC = () => {
           tabBarButton: () => null,
           headerTitle: "",
           tabBarStyle: { display: "none" },
-          headerStyle: {
-            backgroundColor: colors.gray[200],
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerLeft: () => {
-            return (
-              <Pressable
-                ml={4}
-                onPress={() => goBack()}
-                mr={10}
-                mt={Platform.OS === "android" ? 0 : 25}
-              >
-                <ArrowLeft size={24} weight="bold" />
-              </Pressable>
-            );
-          },
-          headerRight: () => (
-            <Box mr={4} mt={Platform.OS === "android" ? 0 : 25}>
-              <ProductTag />
-            </Box>
-          ),
+          headerShown: false,
         }}
       />
 
@@ -211,28 +191,7 @@ const AppRoutes: React.FC = () => {
           tabBarButton: () => null,
           headerTitle: "",
           tabBarStyle: { display: "none" },
-          headerStyle: {
-            backgroundColor: colors.gray[200],
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerLeft: () => {
-            return (
-              <Pressable
-                ml={4}
-                onPress={() => navigate("MySales")}
-                mr={10}
-                mt={Platform.OS === "android" ? 0 : 25}
-              >
-                <ArrowLeft size={24} weight="bold" />
-              </Pressable>
-            );
-          },
-          headerRight: () => (
-            <Box mr={4} mt={Platform.OS === "android" ? 0 : 25}>
-              <PencilSimple size={24} weight="bold" />
-            </Box>
-          ),
+          headerShown: false,
         }}
       />
 

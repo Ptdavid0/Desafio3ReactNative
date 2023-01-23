@@ -1,12 +1,21 @@
-import { VStack, Image, Text, Heading, HStack, Box } from "native-base";
+import {
+  VStack,
+  Image,
+  Text,
+  Heading,
+  HStack,
+  Box,
+  useToast,
+} from "native-base";
 import React from "react";
 import ProductTag from "./ProductTag";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "../routes/app.routes";
 import { Pressable } from "react-native";
-import { ProductDTO } from "../dtos/ProductDTO";
+import { ProductDTO, ProductImages, ProductOwner } from "../dtos/ProductDTO";
 import api from "../service/api";
 import { useAuth } from "../hooks/useAuth";
+import { fetchProductDetails } from "../storage/fetchProductDetails";
 
 type ProductCardProps = {
   showAvatar?: boolean;
@@ -20,7 +29,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product,
 }) => {
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
+  const toast = useToast();
   const { user } = useAuth();
+  const [loading, setLoading] = React.useState(true);
+  const [productOwner, setProductOwner] = React.useState<ProductOwner>();
+
   const handleNavigateToSaleDetails = () => {
     if (isMyProduct)
       return navigate("MySaleDetails", {
@@ -30,6 +43,29 @@ const ProductCard: React.FC<ProductCardProps> = ({
       productId: product.id,
     });
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchProduct() {
+        const productFetched: ProductDTO = await fetchProductDetails(
+          product.id
+        );
+        if (productFetched) {
+          const { user } = productFetched;
+          setProductOwner(user);
+        } else {
+          toast.show({
+            title: "Erro ao carregar anúncio!",
+            duration: 3000,
+            placement: "top",
+          });
+        }
+        setLoading(false);
+      }
+      fetchProduct();
+    }, [product])
+  );
+
   const { name, price } = product;
   return (
     <VStack mt={6} borderRadius={6} w={"47%"}>
@@ -47,11 +83,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           w={"100%"}
           mt={1}
         >
-          {showAvatar ? (
+          {showAvatar && productOwner?.avatar ? (
             <Image
               alt="imageProduct"
               source={{
-                uri: `${api.defaults.baseURL}/images/${user.avatar}`,
+                uri: `${api.defaults.baseURL}/images/${productOwner?.avatar}`,
               }}
               mr={2}
               w={28}
@@ -64,7 +100,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <Box />
           )}
 
-          <ProductTag condition={product.is_new ? "Novo" : "Usado"} />
+          <ProductTag condition={product.is_new} />
         </Box>
         <Image
           alt="imageProduct"

@@ -75,7 +75,7 @@ const MySales: React.FC = () => {
         </HStack>
         <ProductsList
           showAvatar={false}
-          isMyProduct
+          isMyProduct={true}
           products={displayProducts}
         />
       </VStack>

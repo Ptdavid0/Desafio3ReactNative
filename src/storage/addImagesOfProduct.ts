@@ -5,7 +5,6 @@ export const addImagesOfProduct = async (productId: string, images: any[]) => {
   try {
     const form = new FormData();
     form.append("product_id", productId);
-    console.log(productId);
 
     images.forEach((item) => {
       form.append("images", item);

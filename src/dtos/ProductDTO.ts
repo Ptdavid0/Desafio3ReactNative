@@ -13,11 +13,13 @@ export type ProductDTO = {
   updated_at: string;
   product_images: ProductImages[];
   payment_methods: string[];
-  user: {
-    avatar: string;
-    name: string;
-    tel: string;
-  };
+  user: ProductOwner;
+};
+
+export type ProductOwner = {
+  avatar: string;
+  name: string;
+  tel: string;
 };
 
 export type ProductImages = {
