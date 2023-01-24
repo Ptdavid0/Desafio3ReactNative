@@ -24,8 +24,18 @@ import ImageFormPicker from "../components/ImageFormPicker";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { AppNavigatorRoutesProps } from "../routes/app.routes";
+import { useAuth } from "../hooks/useAuth";
+import FormHeader from "../components/FormHeader";
+
+type Params = {
+  product?: any;
+};
 
 const schema = yup.object().shape({
   name: yup.string().required("Nome é obrigatório"),
@@ -36,23 +46,49 @@ const schema = yup.object().shape({
 const CreateSale: React.FC = () => {
   const [paymentMethods, setPaymentMethods] = React.useState<string[]>([]);
   const { colors } = useTheme();
-  const { navigate } = useNavigation<AppNavigatorRoutesProps>();
+  const { navigate, goBack } = useNavigation<AppNavigatorRoutesProps>();
+  const { setCurrentProductImages } = useAuth();
+  const route = useRoute();
 
   const {
     control,
     handleSubmit,
     reset,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (route.params) {
+        const { product } = route.params as Params;
+        console.log(product);
+        setValue("name", product.name);
+        setValue("description", product.description);
+        setPaymentMethods(product.payment_methods);
+        setValue("accept_trade", product.accept_trade);
+        setValue("is_new", product.is_new);
+        setValue("price", (Number(product.price) / 100).toString());
+        console.log(getValues());
+      }
+    }, [route.params])
+  );
+
+  const handleReset = () => {
+    reset();
+    setPaymentMethods([]);
+    setCurrentProductImages([]);
+  };
 
   const onSubmit = (data: any) => {
     const product = {
       ...data,
       payment_methods: paymentMethods,
     };
-    navigate("PreviewSale", { product, reset });
+    navigate("PreviewSale", { product, handleReset });
   };
 
   const Title = ({ children }: any) => (
@@ -277,6 +313,7 @@ const CreateSale: React.FC = () => {
 
   return (
     <VStack flex={1} bg="gray.200" pt={10}>
+      <FormHeader isCreating={!!route.params} resetForm={handleReset} />
       <ScrollView showsVerticalScrollIndicator={false} px={6} mb={100}>
         <ImageBox />
         <AboutBox />

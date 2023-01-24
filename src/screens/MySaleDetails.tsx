@@ -7,35 +7,30 @@ import {
   Heading,
   ScrollView,
   useToast,
-  Pressable,
 } from "native-base";
 import React from "react";
 import { SliderBox } from "react-native-image-slider-box";
 import { useTheme } from "native-base";
-import { Dimensions, Platform } from "react-native";
+import { Dimensions } from "react-native";
 import Button from "../components/Button";
 import {
-  ArrowLeft,
   Bank,
   Barcode,
   CreditCard,
   Money,
-  PencilSimple,
-  PencilSimpleLine,
   Plus,
   Power,
   QrCode,
   TrashSimple,
 } from "phosphor-react-native";
 import ProductTag from "../components/ProductTag";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import { ProductDTO } from "../dtos/ProductDTO";
 import api from "../service/api";
 import { fetchProductDetails } from "../storage/fetchProductDetails";
 import Loading from "../components/Loading";
 import { getProductImages } from "../utils/productsUtils";
-import { AppNavigatorRoutesProps } from "../routes/app.routes";
 import HeaderDetails from "../components/SaleDetailHeader";
 
 type Params = {
@@ -43,8 +38,7 @@ type Params = {
 };
 
 const MySaleDetails: React.FC = () => {
-  const { colors, fonts, sizes } = useTheme();
-  const { goBack, navigate } = useNavigation<AppNavigatorRoutesProps>();
+  const { colors } = useTheme();
   const route = useRoute();
   const toast = useToast();
   const [loading, setLoading] = React.useState(true);
@@ -79,7 +73,7 @@ const MySaleDetails: React.FC = () => {
 
   return (
     <VStack flex={1} bg="gray.200">
-      <HeaderDetails isMySale />
+      <HeaderDetails isMySale product={product} />
       <SliderBox
         images={
           product.product_images.length > 0

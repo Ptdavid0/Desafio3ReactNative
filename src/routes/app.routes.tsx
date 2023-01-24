@@ -8,17 +8,10 @@ import { Platform } from "react-native";
 import Home from "../screens/Home";
 import MySales from "../screens/MySales";
 import CreateSale from "../screens/FormSale";
-import {
-  House,
-  Tag,
-  Plus,
-  ArrowLeft,
-  PencilSimple,
-} from "phosphor-react-native";
+import { House, Tag, Plus, ArrowLeft } from "phosphor-react-native";
 import SignOutIcon from "../components/SignOutIcon";
 import SaleDetails from "../screens/SaleDetails";
 import { useNavigation } from "@react-navigation/native";
-import ProductTag from "../components/ProductTag";
 import MySaleDetails from "../screens/MySaleDetails";
 import PreviewSale from "../screens/PreviewSale";
 import FormSale from "../screens/FormSale";
@@ -36,7 +29,7 @@ type AppRoutes = {
   FormSale: undefined | { product: ProductDTO };
   PreviewSale: {
     product: ProductDTO;
-    reset: () => void;
+    handleReset: () => void;
   };
   MockSignOutScreen: undefined;
 };
@@ -145,17 +138,7 @@ const AppRoutes: React.FC = () => {
           tabBarButton: () => null,
           headerTitle: "Criar anúncio",
           headerTitleAlign: "center",
-          headerTitleStyle: {
-            marginTop: Platform.OS === "android" ? 0 : 25,
-            color: colors.gray[700],
-            fontSize: sizes[5],
-            fontFamily: fonts.heading,
-          },
-          headerStyle: {
-            backgroundColor: colors.gray[200],
-            elevation: 0,
-            shadowOpacity: 0,
-          },
+          headerShown: false,
           tabBarStyle: { display: "none" },
 
           headerLeft: () => {
