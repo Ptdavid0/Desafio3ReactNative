@@ -5,30 +5,7 @@ import DefaultAvatar from "../assets/avatar.png";
 import { PencilSimpleLine } from "phosphor-react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import uuid from "uuid";
-import { PhotoFileDTO } from "../dtos/PhotoFileDTO";
-
-const photoFileConstructor = async (
-  selectedPhoto: ImagePicker.ImagePickerResult
-) => {
-  if (selectedPhoto.assets) {
-    const imageRandomName = uuid.v4();
-    const fileExtension = selectedPhoto.assets[0].uri.split(".").pop();
-    const photoFile = {
-      name: `${imageRandomName}.${fileExtension}`,
-      uri: selectedPhoto.assets[0].uri,
-      type: `${selectedPhoto.assets[0].type}/${fileExtension}`,
-    } as PhotoFileDTO;
-
-    return photoFile;
-  } else {
-    return {
-      name: "",
-      uri: "",
-      type: "",
-    };
-  }
-};
+import { photoFileConstructor } from "../utils/productsUtils";
 
 const checkingPhotoSize = async (selectedPhotoURI: string) => {
   const photoInfo = await FileSystem.getInfoAsync(selectedPhotoURI);

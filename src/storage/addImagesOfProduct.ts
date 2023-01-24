@@ -1,13 +1,16 @@
 import axios from "axios";
 import api from "../service/api";
 
+import { photoFileConstructor } from "../utils/productsUtils";
+
 export const addImagesOfProduct = async (productId: string, images: any[]) => {
   try {
     const form = new FormData();
     form.append("product_id", productId);
 
-    images.forEach((item) => {
-      form.append("images", item);
+    images.forEach(async (item) => {
+      const photoFile: any = await photoFileConstructor(item);
+      form.append("images", photoFile);
     });
 
     const response = await api.post("/products/images/", form, {
