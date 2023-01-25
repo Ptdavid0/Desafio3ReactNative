@@ -136,17 +136,14 @@ const SaleDetails: React.FC = () => {
                 fontSize={"xl"}
                 color={"blue.500"}
               >
-                59,90
+                {product.price}
               </Heading>
             </HStack>
           </HStack>
           {/* Description */}
           <Box mt={2}>
             <Text fontSize="md" fontFamily="body" color="gray.500">
-              lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
-              facilisi. Nulla facilisi. Nulla facilisi. Nulla facilisi. Nulla
+              {product.description}
             </Text>
           </Box>
           {/* Exchange */}
@@ -155,7 +152,7 @@ const SaleDetails: React.FC = () => {
               Aceita troca ?{" "}
             </Text>
             <Text fontSize="md" fontFamily="body" color="gray.500">
-              Sim
+              {product.accept_trade ? "Sim" : "Não"}
             </Text>
           </Box>
           {/* Payment Methods */}
@@ -163,38 +160,46 @@ const SaleDetails: React.FC = () => {
             <Text fontSize="md" fontFamily="heading" color="gray.600">
               Meios de pagamento:
             </Text>
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <QrCode size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Pix
-              </Text>
-            </Box>
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <Barcode size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Boleto
-              </Text>
-            </Box>
-
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <Money size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Dinheiro
-              </Text>
-            </Box>
-
-            <Box mt={2} flexDirection="row" alignItems="center">
-              <CreditCard size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Cartão de Crédito
-              </Text>
-            </Box>
-            <Box mt={2} flexDirection="row" alignItems="center" mb={10}>
-              <Bank size={20} color={colors.gray[700]} />
-              <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
-                Depósito Bancário
-              </Text>
-            </Box>
+            {product.payment_methods.includes("pix") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <QrCode size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Pix
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("boleto") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <Barcode size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Boleto
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("cash") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <Money size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Dinheiro
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("card") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <CreditCard size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Cartão de Crédito
+                </Text>
+              </Box>
+            )}
+            {product.payment_methods.includes("deposit") && (
+              <Box mt={2} flexDirection="row" alignItems="center">
+                <Bank size={20} color={colors.gray[700]} />
+                <Text fontSize="md" fontFamily="body" color="gray.500" ml={2}>
+                  Depósito Bancário
+                </Text>
+              </Box>
+            )}
           </Box>
         </ScrollView>
       </VStack>

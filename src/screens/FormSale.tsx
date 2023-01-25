@@ -55,7 +55,6 @@ const CreateSale: React.FC = () => {
     handleSubmit,
     reset,
     setValue,
-    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -65,14 +64,12 @@ const CreateSale: React.FC = () => {
     React.useCallback(() => {
       if (route.params) {
         const { product } = route.params as Params;
-        console.log(product);
         setValue("name", product.name);
         setValue("description", product.description);
         setPaymentMethods(product.payment_methods);
         setValue("accept_trade", product.accept_trade);
         setValue("is_new", product.is_new);
         setValue("price", (Number(product.price) / 100).toString());
-        console.log(getValues());
       }
     }, [route.params])
   );
@@ -97,16 +94,18 @@ const CreateSale: React.FC = () => {
     </Text>
   );
 
-  const ImageBox = () => (
-    <VStack w="100%" justifyContent={"center"}>
-      <Title>Imagens</Title>
-      <Text fontSize="md" color="gray.600" fontFamily={"body"}>
-        Escolha até 3 imagens para mostrar o quando o seu produto é incrível!
-      </Text>
+  const ImageBox = () => {
+    return (
+      <VStack w="100%" justifyContent={"center"}>
+        <Title>Imagens</Title>
+        <Text fontSize="md" color="gray.600" fontFamily={"body"}>
+          Escolha até 3 imagens para mostrar o quando o seu produto é incrível!
+        </Text>
 
-      <ImageFormPicker />
-    </VStack>
-  );
+        <ImageFormPicker />
+      </VStack>
+    );
+  };
 
   const AboutBox = () => (
     <VStack w="100%" justifyContent={"center"} mt={8}>

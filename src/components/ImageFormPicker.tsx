@@ -11,31 +11,10 @@ import * as ImagePicker from "expo-image-picker";
 import { Alert, TouchableOpacity } from "react-native";
 import { useTheme } from "native-base";
 import * as FileSystem from "expo-file-system";
-import uuid from "uuid";
 import { PhotoFileDTO } from "../dtos/PhotoFileDTO";
 import { useAuth } from "../hooks/useAuth";
-
-const photoFileConstructor = async (
-  selectedPhoto: ImagePicker.ImagePickerResult
-) => {
-  if (selectedPhoto.assets) {
-    const imageRandomName = uuid.v4();
-    const fileExtension = selectedPhoto.assets[0].uri.split(".").pop();
-    const photoFile = {
-      name: `${imageRandomName}.${fileExtension}`,
-      uri: selectedPhoto.assets[0].uri,
-      type: `${selectedPhoto.assets[0].type}/${fileExtension}`,
-    } as any;
-
-    return photoFile;
-  } else {
-    return {
-      name: "",
-      uri: "",
-      type: "",
-    };
-  }
-};
+import { photoFileConstructor } from "../utils/productsUtils";
+import api from "../service/api";
 
 const checkingPhotoSize = async (selectedPhotoURI: string) => {
   const photoInfo = await FileSystem.getInfoAsync(selectedPhotoURI);
@@ -55,7 +34,7 @@ const checkingPhotoSize = async (selectedPhotoURI: string) => {
   }
 };
 
-const ImageFormPicker: React.FC = () => {
+const ImageFormPicker: React.FC = ({}) => {
   const { colors } = useTheme();
   const { setCurrentProductImages, currentProductImages } = useAuth();
 
@@ -90,7 +69,13 @@ const ImageFormPicker: React.FC = () => {
   const Image = (image: PhotoFileDTO) => (
     <Box justifyContent={"center"} w={100} h={100} mr={4}>
       <NativeImage
-        source={{ uri: image.uri }}
+        source={
+          image.path
+            ? {
+                uri: `${api.defaults.baseURL}/images/${image.path}`,
+              }
+            : { uri: image.uri }
+        }
         alt="Alternate Text"
         w={100}
         h={100}
