@@ -18,7 +18,6 @@ import {
   Barcode,
   CreditCard,
   Money,
-  Plus,
   Power,
   QrCode,
   TrashSimple,
@@ -32,6 +31,10 @@ import { fetchProductDetails } from "../storage/fetchProductDetails";
 import Loading from "../components/Loading";
 import { getProductImages } from "../utils/productsUtils";
 import HeaderDetails from "../components/SaleDetailHeader";
+import { setProductVisibility } from "../storage/setProductVisibility";
+import { deleteProduct } from "../storage/deleteProduct";
+import { useNavigation } from "@react-navigation/native";
+import { AppNavigatorRoutesProps } from "../routes/app.routes";
 
 type Params = {
   productId: string;
@@ -41,6 +44,7 @@ const MySaleDetails: React.FC = () => {
   const { colors } = useTheme();
   const route = useRoute();
   const toast = useToast();
+  const { navigate } = useNavigation<AppNavigatorRoutesProps>();
   const [loading, setLoading] = React.useState(true);
   const [product, setProduct] = React.useState<ProductDTO>({} as ProductDTO);
 
@@ -66,6 +70,47 @@ const MySaleDetails: React.FC = () => {
       fetchProduct();
     }, [productId])
   );
+
+  const handleChangeProductVisibility = async (visibility: boolean) => {
+    const hasChanged = await setProductVisibility(productId, !visibility);
+    if (hasChanged) {
+      toast.show({
+        title: "Anúncio alterado com sucesso!",
+        duration: 3000,
+        placement: "top",
+      });
+      setProduct({
+        ...product,
+        is_active: !visibility,
+      });
+    } else {
+      toast.show({
+        title: "Erro ao alterar anúncio!",
+        duration: 3000,
+        placement: "top",
+      });
+    }
+  };
+
+  const handleDeleteProduct = async () => {
+    const hasBeenDeleted = await deleteProduct(productId);
+    if (hasBeenDeleted) {
+      navigate("MySales");
+      toast.show({
+        title: "Anúncio deletado com sucesso!",
+        duration: 3000,
+        placement: "top",
+      });
+    } else {
+      toast.show({
+        title: "Erro ao deletar anúncio!",
+        duration: 3000,
+        placement: "top",
+      });
+    }
+  };
+
+  console.log(product);
 
   if (loading || !product) {
     return <Loading />;
@@ -159,7 +204,7 @@ const MySaleDetails: React.FC = () => {
             <Text fontSize="md" fontFamily="heading" color="gray.600">
               Condição do produto:{"   "}
             </Text>
-            <ProductTag condition={product.is_new} />
+            <ProductTag isNew={product.is_new} />
           </Box>
 
           {/* Payment Methods */}
@@ -209,10 +254,11 @@ const MySaleDetails: React.FC = () => {
             )}
           </Box>
           <Button
-            title="Desativar anúncio"
-            type="Tertiary"
+            title={product.is_active ? "Desativar anúncio" : "Ativar anúncio"}
+            type={product.is_active ? "Tertiary" : "Primary"}
             size={"full"}
             icon={<Power size={20} color="white" />}
+            onPress={() => handleChangeProductVisibility(product.is_active)}
           />
           <Button
             title="Excluir anúncio"
@@ -221,6 +267,7 @@ const MySaleDetails: React.FC = () => {
             mb={12}
             size={"full"}
             icon={<TrashSimple size={20} color="black" />}
+            onPress={() => handleDeleteProduct()}
           />
         </ScrollView>
       </VStack>

@@ -30,7 +30,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
   const toast = useToast();
-  const { user } = useAuth();
   const [loading, setLoading] = React.useState(true);
   const [productOwner, setProductOwner] = React.useState<ProductOwner>();
 
@@ -66,64 +65,109 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }, [product])
   );
 
+  const getProductOpacity = () => {
+    if (!isMyProduct) return 1;
+    if (isMyProduct && product.is_active) return 1;
+    return 0.7;
+  };
+
+  const getColorOftext = () => {
+    if (!isMyProduct) return "gray.600";
+    if (isMyProduct && product.is_active) return "gray.600";
+    return "gray.400";
+  };
+
+  const getDisplay = () => {
+    if (!isMyProduct) return "none";
+    if (isMyProduct && product.is_active) return "none";
+    return "flex";
+  };
+
   const { name, price } = product;
   return (
     <VStack mt={6} borderRadius={6} w={"47%"}>
       <Pressable onPress={handleNavigateToSaleDetails}>
-        <Box
-          px={1}
-          justifyContent={"space-between"}
-          alignItems={"top-line"}
-          mb={2}
-          flexDirection={"row"}
-          position={"absolute"}
-          top={0}
-          right={0}
-          zIndex={1}
-          w={"100%"}
-          mt={1}
-        >
-          {showAvatar && productOwner?.avatar ? (
-            <Image
-              alt="imageProduct"
-              source={{
-                uri: `${api.defaults.baseURL}/images/${productOwner?.avatar}`,
-              }}
-              mr={2}
-              w={28}
-              h={28}
-              rounded={50}
-              borderColor="white"
-              borderWidth={1.5}
-            />
-          ) : (
-            <Box />
-          )}
+        <Box position={"relative"} opacity={getProductOpacity()}>
+          <Box
+            display={getDisplay()}
+            position={"absolute"}
+            bottom={0}
+            left={0}
+            pl={1}
+            pb={1}
+            zIndex={1}
+            w={"100%"}
+            bg={"white"}
+          >
+            <Text fontFamily="heading" color={"gray.700"} mr={2}>
+              ANÚNCIO DESATIVADO
+            </Text>
+          </Box>
 
-          <ProductTag condition={product.is_new} />
+          <Box
+            px={1}
+            justifyContent={"space-between"}
+            alignItems={"top-line"}
+            mb={2}
+            flexDirection={"row"}
+            position={"absolute"}
+            top={0}
+            right={0}
+            zIndex={1}
+            w={"100%"}
+            mt={1}
+          >
+            {showAvatar && productOwner?.avatar ? (
+              <Image
+                alt="imageProduct"
+                source={{
+                  uri: `${api.defaults.baseURL}/images/${productOwner?.avatar}`,
+                }}
+                mr={2}
+                w={28}
+                h={28}
+                rounded={50}
+                borderColor="white"
+                borderWidth={1.5}
+              />
+            ) : (
+              <Box />
+            )}
+
+            <ProductTag isNew={product.is_new} />
+          </Box>
+          <Image
+            alt="imageProduct"
+            source={
+              product.product_images && product.product_images.length > 0
+                ? {
+                    uri: `${api.defaults.baseURL}/images/${product.product_images[0].path}`,
+                  }
+                : require("../assets/tenis.jpg")
+            }
+            mr={2}
+            w={"100%"}
+            h={110}
+            rounded={6}
+          />
         </Box>
-        <Image
-          alt="imageProduct"
-          source={
-            product.product_images && product.product_images.length > 0
-              ? {
-                  uri: `${api.defaults.baseURL}/images/${product.product_images[0].path}`,
-                }
-              : require("../assets/tenis.jpg")
-          }
-          mr={2}
-          w={"100%"}
-          h={110}
-          rounded={6}
-        />
-        <Text mt={2} color="gray.600" fontSize="md" fontFamily="body">
+        <Text mt={2} fontSize="md" fontFamily="body" color={getColorOftext()}>
           {name}
         </Text>
         <HStack alignItems="baseline" mt={1}>
-          <Heading mr={1} fontSize={"sm"} fontFamily={"heading"}>
+          <Heading
+            mr={1}
+            fontSize={"sm"}
+            fontFamily={"heading"}
+            color={getColorOftext()}
+          >
             R$
           </Heading>
-          <Heading fontFamily={"heading"} fontSize={"lg"}>
+          <Heading
+            fontFamily={"heading"}
+            fontSize={"lg"}
+            color={getColorOftext()}
+          >
             {price / 100}
           </Heading>
         </HStack>

@@ -116,7 +116,7 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       const token = await storageAuthTokenGet();
 
       if (userLogged && token) {
-        userAndTokenUpdate(userLogged, token);
+        await userAndTokenUpdate(userLogged, token);
       }
     } catch (error) {
       throw error;

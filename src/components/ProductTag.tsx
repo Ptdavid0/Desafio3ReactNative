@@ -2,14 +2,14 @@ import { Box, Text } from "native-base";
 import React from "react";
 
 type ProductTagProps = {
-  condition: boolean;
+  isNew: boolean;
 };
 
-const ProductTag: React.FC<ProductTagProps> = ({ condition }) => {
-  const conditionText = condition ? "NOVO" : "USADO";
+const ProductTag: React.FC<ProductTagProps> = ({ isNew }) => {
+  const conditionText = isNew ? "NOVO" : "USADO";
   return (
     <Box
-      bg="blue.500"
+      bg={isNew ? "blue.500" : "gray.600"}
       px={3}
       py={0.3}
       borderRadius={101}
