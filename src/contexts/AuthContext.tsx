@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FilterDTO } from "../dtos/FilterDTO";
 import { PhotoFileDTO } from "../dtos/PhotoFileDTO";
 import { ProductDTO } from "../dtos/ProductDTO";
 import { UserDTO } from "../dtos/UserDTO";
@@ -13,6 +14,7 @@ import {
   storageUserGet,
   storageUserRemove,
 } from "../storage/storageUsers";
+import { getFilteredProducts } from "../storage/getAllFilteredProducts";
 
 export type AuthContextData = {
   signed: boolean;
@@ -29,6 +31,7 @@ export type AuthContextData = {
   currentProductImages: PhotoFileDTO[];
   setCurrentProductImages: React.Dispatch<React.SetStateAction<PhotoFileDTO[]>>;
   cleanCurrentProductImages: () => void;
+  filterProducts: (filters: FilterDTO) => Promise<void>;
 };
 
 type AuthContextProviderProps = {
@@ -67,6 +70,15 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       throw error;
     } finally {
       setIsLoadingUserStorageData(false);
+    }
+  };
+
+  const filterProducts = async (filters: FilterDTO) => {
+    try {
+      const products = await getFilteredProducts(filters);
+      setAllProducts(products);
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -152,6 +164,7 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     currentProductImages,
     setCurrentProductImages,
     cleanCurrentProductImages,
+    filterProducts,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

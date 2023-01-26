@@ -153,7 +153,6 @@ const CreateSale: React.FC = () => {
               accessibilityLabel="favorite number"
               onChange={(value) => onChange(value === "new" ? true : false)}
               value={value === true ? "new" : "used"}
-              defaultValue="one"
               direction={"row"}
               w={"100%"}
             >
@@ -176,7 +175,6 @@ const CreateSale: React.FC = () => {
           )}
           name="is_new"
           rules={{ required: true }}
-          defaultValue=""
         />
       </HStack>
     </VStack>
@@ -232,7 +230,6 @@ const CreateSale: React.FC = () => {
         )}
         name="accept_trade"
         rules={{ required: true }}
-        defaultValue=""
       />
 
       <Text fontSize="md" fontFamily="heading" color="gray.600" mt={4}>
