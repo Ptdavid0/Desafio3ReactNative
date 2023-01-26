@@ -7,24 +7,10 @@ import {
   VStack,
   Divider,
   Pressable,
-  Checkbox,
-  Icon,
-  Switch,
 } from "native-base";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import Button from "../components/Button";
-import {
-  Plus,
-  Tag,
-  MagnifyingGlass,
-  Sliders,
-  Bank,
-  Barcode,
-  CreditCard,
-  Money,
-  QrCode,
-  X,
-} from "phosphor-react-native";
+import { Plus, Tag, MagnifyingGlass, Sliders } from "phosphor-react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTheme } from "native-base";
 import InvButton from "../components/InvButton";
@@ -37,23 +23,17 @@ import api from "../service/api";
 import { getAllProducts } from "../storage/getAllProducts";
 import { getAllMyProducts } from "../storage/getAllMyProducts";
 import { getActiveProducts } from "../utils/productsUtils";
+import BottomSheetFilters from "../components/BottomSheet";
 
 const Home: React.FC = () => {
   const { colors } = useTheme();
   const { user, setAllProducts, setAllMyProducts, allMyProducts, allProducts } =
     useAuth();
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const { navigate } = useNavigation<AppNavigatorRoutesProps>();
 
   const bottomSheetRef = React.useRef<BottomSheet>(null);
-
-  const snapPoints = React.useMemo(() => ["75%"], []);
-
-  const handleSheetChanges = React.useCallback((index: number) => {}, []);
-
-  const handleClosePress = useCallback(() => {
-    bottomSheetRef.current?.close();
-  }, []);
 
   const handleSnapPress = useCallback((index: number) => {
     bottomSheetRef.current?.snapToIndex(index);
@@ -61,6 +41,7 @@ const Home: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
+      setIsLoading(true);
       const getProducts = async () => {
         const products = await getAllProducts();
         const myProducts = await getAllMyProducts();
@@ -68,6 +49,7 @@ const Home: React.FC = () => {
         setAllMyProducts(myProducts);
       };
       getProducts();
+      setIsLoading(false);
     }, [])
   );
 
@@ -165,152 +147,18 @@ const Home: React.FC = () => {
     </VStack>
   );
 
-  const Title = ({ children }: any) => (
-    <Text fontSize="xl" color="gray.600" fontFamily={"heading"}>
-      {children}
-    </Text>
-  );
-
   return (
     <VStack flex={1} bg="gray.200" w={"100%"} px={6}>
       <Header />
       <MyProducts />
       <FilterProducts />
-      <ProductsList products={allProducts} showAvatar isMyProduct={false} />
-
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-        enablePanDownToClose={true}
-      >
-        <Box flex={1} bg="white" px={6}>
-          <VStack w="100%" mt={8}>
-            <HStack justifyContent="space-between" alignItems="center">
-              <Title>Filtrar anúncios</Title>
-              <Pressable onPress={handleClosePress} mr={2}>
-                <X size={24} color={colors.gray[400]} weight="bold" />
-              </Pressable>
-            </HStack>
-            <Text fontSize="md" fontFamily="heading" color="gray.600" mt={8}>
-              Condição
-            </Text>
-
-            <HStack w="100%" mt={2}>
-              <Checkbox
-                value="orange"
-                size="md"
-                bgColor={"gray.100"}
-                my={2}
-                mr={4}
-                _checked={{
-                  bg: "blue.500",
-                  color: "white",
-                }}
-              >
-                Novo
-              </Checkbox>
-              <Checkbox
-                value="orange"
-                size="md"
-                bgColor={"gray.100"}
-                my={2}
-                _checked={{
-                  bg: "blue.500",
-                  color: "white",
-                }}
-              >
-                Usado
-              </Checkbox>
-            </HStack>
-
-            <Text fontSize="md" fontFamily="heading" color="gray.600" mt={2}>
-              Aceita troca ?
-            </Text>
-            <Switch
-              size="md"
-              mt={2}
-              offTrackColor="gray.200"
-              onTrackColor="blue.500"
-              onThumbColor="white"
-              // onToggle={() => {}}
-            />
-            <Text fontSize="md" fontFamily="heading" color="gray.600" mt={4}>
-              Meios de pagamento aceitos
-            </Text>
-            <VStack w="100%" justifyContent={"center"} mt={2}>
-              <Checkbox
-                value="orange"
-                size="md"
-                bgColor={"gray.100"}
-                icon={<Icon as={<Barcode size={16} color={colors.white} />} />}
-                my={2}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Boleto
-              </Checkbox>
-              <Checkbox
-                value="dark"
-                size="md"
-                bgColor={"gray.100"}
-                icon={<Icon as={<QrCode size={16} color={colors.white} />} />}
-                my={1}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Pix
-              </Checkbox>
-              <Checkbox
-                value="red"
-                size="md"
-                bgColor={"gray.100"}
-                icon={<Icon as={<Money size={16} color={colors.white} />} />}
-                my={1}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Dinheiro
-              </Checkbox>
-              <Checkbox
-                value="blue"
-                size="md"
-                bgColor={"gray.100"}
-                icon={
-                  <Icon as={<CreditCard size={16} color={colors.white} />} />
-                }
-                my={1}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Cartão de crédito
-              </Checkbox>
-              <Checkbox
-                value="blue"
-                size="md"
-                bgColor={"gray.100"}
-                icon={<Icon as={<Bank size={16} color={colors.white} />} />}
-                mb={4}
-                my={1}
-                _checked={{
-                  bg: "blue.500",
-                }}
-              >
-                Depósito bancário
-              </Checkbox>
-            </VStack>
-            <HStack w="100%" justifyContent="space-between" mt={4}>
-              <Button title="Resetar filtros" type="Tertiary" size={"mid"} />
-              <Button title="Aplicar filtros" type="Secundary" size={"mid"} />
-            </HStack>
-          </VStack>
-        </Box>
-      </BottomSheet>
+      <ProductsList
+        products={allProducts}
+        showAvatar
+        isMyProduct={false}
+        isLoading={isLoading}
+      />
+      <BottomSheetFilters sheetRef={bottomSheetRef} />
     </VStack>
   );
 };

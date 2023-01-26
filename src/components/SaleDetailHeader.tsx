@@ -8,13 +8,13 @@ import ProductTag from "./ProductTag";
 import { ProductDTO } from "../dtos/ProductDTO";
 
 type Props = {
-  isNew?: boolean;
+  isNew: boolean;
   isMySale?: boolean;
   product?: ProductDTO;
 };
 
 const HeaderDetails: React.FC<Props> = ({
-  isNew = false,
+  isNew,
   isMySale = false,
   product,
 }) => {
@@ -45,7 +45,7 @@ const HeaderDetails: React.FC<Props> = ({
           <PencilSimpleLine size={24} weight="bold" />
         </Pressable>
       ) : (
-        <ProductTag condition={isNew} />
+        <ProductTag isNew={isNew} />
       )}
     </Box>
   );
