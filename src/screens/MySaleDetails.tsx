@@ -118,7 +118,7 @@ const MySaleDetails: React.FC = () => {
 
   return (
     <VStack flex={1} bg="gray.200">
-      <HeaderDetails isMySale product={product} />
+      <HeaderDetails isMySale product={product} isNew={false} />
       <SliderBox
         images={
           product.product_images.length > 0
